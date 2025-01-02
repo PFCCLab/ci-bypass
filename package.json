@@ -1,22 +1,23 @@
 {
-  "name": "typescript-action",
-  "description": "GitHub Actions TypeScript template",
+  "name": "ci-bypass",
+  "description": "Bypass CI checks for GitHub Actions",
   "version": "0.0.0",
   "author": "",
   "private": true,
   "packageManager": "pnpm@9.15.1",
-  "homepage": "https://github.com/actions/typescript-action",
+  "homepage": "https://github.com/PFCCLab/ci-bypass",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/typescript-action.git"
+    "url": "git+https://github.com/PFCCLab/ci-bypass.git"
   },
   "bugs": {
-    "url": "https://github.com/actions/typescript-action/issues"
+    "url": "https://github.com/PFCCLab/ci-bypass/issues"
   },
   "keywords": [
     "actions",
     "node",
-    "setup"
+    "setup",
+    "bypass"
   ],
   "exports": {
     ".": "./dist/index.js"
