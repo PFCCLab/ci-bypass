@@ -26,15 +26,15 @@
   },
   "scripts": {
     "bundle": "pnpm run format:write && pnpm run package",
-    "ci-test": "pnpm dlx jest",
-    "coverage": "pnpm dlx make-coverage-badge --output-path ./badges/coverage.svg",
-    "format:write": "pnpm dlx prettier --write .",
-    "format:check": "pnpm dlx prettier --check .",
-    "lint": "pnpm dlx eslint . -c ./.github/linters/.eslintrc.yml",
-    "local-action": "pnpm dlx local-action . src/main.ts .env",
-    "package": "pnpm dlx ncc build src/index.ts -o dist --source-map --license licenses.txt",
+    "ci-test": "pnpm jest",
+    "coverage": "pnpm make-coverage-badge --output-path ./badges/coverage.svg",
+    "format:write": "pnpm prettier --write .",
+    "format:check": "pnpm prettier --check .",
+    "lint": "pnpm eslint . -c ./.github/linters/.eslintrc.yml",
+    "run-local-action": "pnpm local-action . src/main.ts .env",
+    "package": "pnpm ncc build src/index.ts -o dist --source-map --license licenses.txt",
     "package:watch": "pnpm run package -- --watch",
-    "test": "pnpm dlx jest",
+    "test": "pnpm jest",
     "all": "pnpm run format:write && pnpm run lint && pnpm run test && pnpm run coverage && pnpm run package"
   },
   "license": "MIT",
@@ -87,6 +87,7 @@
     "prettier": "^3.4.2",
     "prettier-eslint": "^16.3.0",
     "ts-jest": "^29.2.5",
+    "tsx": "^4.19.2",
     "typescript": "^5.7.2"
   }
 }
