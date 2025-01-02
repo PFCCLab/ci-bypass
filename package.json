@@ -40,7 +40,7 @@
   },
   "devDependencies": {
     "@github/local-action": "^2.2.1",
-    "@types/node": "^22.10.3",
+    "@types/node": "^22.10.4",
     "@vercel/ncc": "^0.38.3",
     "prettier": "^3.4.2",
     "tsx": "^4.19.2",
