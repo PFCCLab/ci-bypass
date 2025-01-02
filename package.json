@@ -30,8 +30,7 @@
     "format:check": "pnpm prettier --check .",
     "run-local-action": "pnpm local-action . src/main.ts .env",
     "package": "pnpm ncc build src/index.ts -o dist --source-map --license licenses.txt",
-    "package:watch": "pnpm run package -- --watch",
-    "all": "pnpm run format:write && pnpm run lint && pnpm run test && pnpm run coverage && pnpm run package"
+    "package:watch": "pnpm run package -- --watch"
   },
   "license": "MIT",
   "dependencies": {
