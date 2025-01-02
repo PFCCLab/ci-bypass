@@ -92,21 +92,21 @@ There are a few things to keep in mind when writing your action code:
 - Most GitHub Actions toolkit and CI/CD operations are processed asynchronously.
   In `main.ts`, you will see that the action is run in an `async` function.
 
-  ```javascript
-  import * as core from '@actions/core'
-  //...
+   ```javascript
+   import * as core from '@actions/core'
+   //...
 
-  async function run() {
-    try {
-      //...
-    } catch (error) {
-      core.setFailed(error.message)
-    }
-  }
-  ```
+   async function run() {
+      try {
+         //...
+      } catch (error) {
+         core.setFailed(error.message)
+      }
+   }
+   ```
 
-  For more information about the GitHub Actions toolkit, see the
-  [documentation](https://github.com/actions/toolkit/blob/master/README.md).
+   For more information about the GitHub Actions toolkit, see the
+   [documentation](https://github.com/actions/toolkit/blob/master/README.md).
 
 So, what are you waiting for? Go ahead and start customizing your action!
 
@@ -143,15 +143,15 @@ So, what are you waiting for? Go ahead and start customizing your action!
 
    - Visual Studio Code Debugger
 
-     Make sure to review and, if needed, update
-     [`.vscode/launch.json`](./.vscode/launch.json)
+      Make sure to review and, if needed, update
+      [`.vscode/launch.json`](./.vscode/launch.json)
 
    - Terminal/Command Prompt
 
-     ```bash
-     # npx local action <action-yaml-path> <entrypoint> <dotenv-file>
-     npx local-action . src/main.ts .env
-     ```
+      ```bash
+      # npx local action <action-yaml-path> <entrypoint> <dotenv-file>
+      npx local-action . src/main.ts .env
+      ```
 
    You can provide a `.env` file to the `local-action` CLI to set environment
    variables used by the GitHub Actions Toolkit. For example, setting inputs and
@@ -189,19 +189,19 @@ action in the same repository.
 
 ```yaml
 steps:
-  - name: Checkout
-    id: checkout
-    uses: actions/checkout@v4
+   - name: Checkout
+     id: checkout
+     uses: actions/checkout@v4
 
-  - name: Test Local Action
-    id: test-action
-    uses: ./
-    with:
-      milliseconds: 1000
+   - name: Test Local Action
+     id: test-action
+     uses: ./
+     with:
+        milliseconds: 1000
 
-  - name: Print Output
-    id: output
-    run: echo "${{ steps.test-action.outputs.time }}"
+   - name: Print Output
+     id: output
+     run: echo "${{ steps.test-action.outputs.time }}"
 ```
 
 For example workflow runs, check out the
@@ -220,19 +220,19 @@ hash.
 
 ```yaml
 steps:
-  - name: Checkout
-    id: checkout
-    uses: actions/checkout@v4
+   - name: Checkout
+     id: checkout
+     uses: actions/checkout@v4
 
-  - name: Test Local Action
-    id: test-action
-    uses: actions/typescript-action@v1 # Commit with the `v1` tag
-    with:
-      milliseconds: 1000
+   - name: Test Local Action
+     id: test-action
+     uses: actions/typescript-action@v1 # Commit with the `v1` tag
+     with:
+        milliseconds: 1000
 
-  - name: Print Output
-    id: output
-    run: echo "${{ steps.test-action.outputs.time }}"
+   - name: Print Output
+     id: output
+     run: echo "${{ steps.test-action.outputs.time }}"
 ```
 
 ## Publishing a New Release
