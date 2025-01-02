@@ -35,9 +35,8 @@ jobs:
           node-version-file: .node-version
           cache: pnpm
 
-      - name: Install Dependencies
-        id: install
-        run: pnpm ci
+      - name: Install dependencies
+        run: pnpm i --frozen-lockfile
 
       - name: Lint Codebase
         id: super-linter
