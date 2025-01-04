@@ -25779,7 +25779,8 @@ async function run() {
         core.info(`skip-if: ${skipIf}`);
         async function check(value) {
             const context = {};
-            return (0, rules_1.checkRule)(value, context);
+            const bypassChecker = new rules_1.ByPassCheckerBuilder().use(rules_1.LabelRule).build();
+            return bypassChecker.check(skipIf, context);
         }
         const result = await (0, composite_1.resolveCompositeAsync)(check)(skipIf);
         core.info(`check result: ${result}`);
@@ -25802,42 +25803,58 @@ async function run() {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.RuleFactory = exports.AbstractRule = void 0;
-exports.checkRule = checkRule;
+exports.AbstractRule = void 0;
 class AbstractRule {
+    static type;
     static fromObject(obj) {
         throw new Error('fromObject method must be implemented');
     }
 }
 exports.AbstractRule = AbstractRule;
-class RuleFactory {
-    static instance;
-    ruleClasses = new Map();
-    constructor() { }
-    static getInstance() {
-        if (!RuleFactory.instance) {
-            RuleFactory.instance = new RuleFactory();
-        }
-        return RuleFactory.instance;
+
+
+/***/ }),
+
+/***/ 465:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ByPassCheckerBuilder = exports.ByPassChecker = void 0;
+class ByPassChecker {
+    ruleClasses;
+    constructor(ruleClasses) {
+        this.ruleClasses = ruleClasses;
     }
-    registerRuleType(type, ruleClass) {
-        this.ruleClasses.set(type, ruleClass);
+    async check(rule, context) {
+        if (!rule || typeof rule !== 'object' || !rule.type) {
+            throw new Error('Invalid rule object');
+        }
+        console.log(this.ruleClasses);
+        const ruleInstance = this.getRuleClass(rule.type)?.fromObject(rule);
+        if (!ruleInstance) {
+            throw new Error(`Unsupported rule type: ${rule.type}`);
+        }
+        return await ruleInstance.check(context);
     }
     getRuleClass(type) {
         return this.ruleClasses.get(type);
     }
 }
-exports.RuleFactory = RuleFactory;
-async function checkRule(rule, context) {
-    if (!rule || typeof rule !== 'object' || !rule.type) {
-        throw new Error('Invalid rule object');
+exports.ByPassChecker = ByPassChecker;
+class ByPassCheckerBuilder {
+    ruleClasses = new Map();
+    constructor() { }
+    use(ruleClass) {
+        this.ruleClasses.set(ruleClass.type, ruleClass);
+        return this;
     }
-    const ruleInstance = RuleFactory.getInstance().getRuleClass(rule.type)?.fromObject(rule);
-    if (!ruleInstance) {
-        throw new Error(`Unsupported rule type: ${rule.type}`);
+    build() {
+        return new ByPassChecker(this.ruleClasses);
     }
-    return await ruleInstance.check(context);
 }
+exports.ByPassCheckerBuilder = ByPassCheckerBuilder;
 
 
 /***/ }),
@@ -25848,9 +25865,43 @@ async function checkRule(rule, context) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.checkRule = void 0;
-var base_1 = __nccwpck_require__(580);
-Object.defineProperty(exports, "checkRule", ({ enumerable: true, get: function () { return base_1.checkRule; } }));
+exports.LabelRule = exports.ByPassChecker = exports.ByPassCheckerBuilder = void 0;
+var check_1 = __nccwpck_require__(465);
+Object.defineProperty(exports, "ByPassCheckerBuilder", ({ enumerable: true, get: function () { return check_1.ByPassCheckerBuilder; } }));
+Object.defineProperty(exports, "ByPassChecker", ({ enumerable: true, get: function () { return check_1.ByPassChecker; } }));
+var label_1 = __nccwpck_require__(543);
+Object.defineProperty(exports, "LabelRule", ({ enumerable: true, get: function () { return label_1.LabelRule; } }));
+
+
+/***/ }),
+
+/***/ 543:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.LabelRule = void 0;
+const base_1 = __nccwpck_require__(580);
+class LabelRule extends base_1.AbstractRule {
+    static type = 'labeled';
+    label;
+    userName;
+    userTeam;
+    constructor(label, userName, userTeam) {
+        super();
+        this.label = label;
+        this.userName = userName ?? null;
+        this.userTeam = userTeam ?? null;
+    }
+    async check(context) {
+        return true;
+    }
+    static fromObject(obj) {
+        return new LabelRule(obj.label, obj.userName, obj.userTeam);
+    }
+}
+exports.LabelRule = LabelRule;
 
 
 /***/ }),

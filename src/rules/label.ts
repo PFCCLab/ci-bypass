@@ -1,7 +1,7 @@
-import { AbstractRule, RuleFactory } from './base'
+import { AbstractRule } from './base'
 
 export class LabelRule extends AbstractRule {
-  public type: string
+  public static type: string = 'labeled'
   public label: string | string[]
   public userName: string | string[] | null
   public userTeam: string | string[] | null
@@ -11,7 +11,6 @@ export class LabelRule extends AbstractRule {
     userTeam: string | string[] | undefined
   ) {
     super()
-    this.type = 'labeled'
     this.label = label
     this.userName = userName ?? null
     this.userTeam = userTeam ?? null
@@ -25,4 +24,3 @@ export class LabelRule extends AbstractRule {
     return new LabelRule(obj.label, obj.userName, obj.userTeam)
   }
 }
-RuleFactory.getInstance().registerRuleType('labeled', LabelRule as unknown as typeof AbstractRule)

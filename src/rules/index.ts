@@ -1,1 +1,2 @@
-export { checkRule } from './base'
+export { ByPassCheckerBuilder, ByPassChecker } from './check'
+export { LabelRule } from './label'

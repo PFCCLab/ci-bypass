@@ -1,6 +1,6 @@
 import * as core from '@actions/core'
 import { resolveCompositeAsync } from './composite'
-import { checkRule } from './rules'
+import { ByPassCheckerBuilder, LabelRule } from './rules'
 
 /**
  * The main function for the action.
@@ -13,7 +13,8 @@ export async function run(): Promise<void> {
 
     async function check(value: any): Promise<boolean> {
       const context = {}
-      return checkRule(value, context)
+      const bypassChecker = new ByPassCheckerBuilder().use(LabelRule).build()
+      return bypassChecker.check(skipIf, context)
     }
 
     const result = await resolveCompositeAsync(check)(skipIf)
