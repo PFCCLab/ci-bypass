@@ -30236,13 +30236,16 @@ class LabelRule extends base_1.AbstractRule {
         };
         const isValidLabeledUserByTeam = async (currentEventUserName, allowUserTeams) => {
             return await Promise.all(allowUserTeams.map(async (team) => {
+                core.info(`Before get teamMembers ${team}`);
                 const { data: teamMembers } = await octokit.rest.teams.listMembersInOrg({
                     org: owner,
                     team_slug: team,
                 });
+                core.info(`After get teamMembers ${team}`);
                 return teamMembers.map((member) => member.login);
             })).then((results) => {
                 const result = results.some((members) => members.includes(currentEventUserName));
+                core.info(`user ${currentEventUserName} in allowUserTeams ${allowUserTeams} result ${result}`);
                 if (!result) {
                     core.info(`user ${currentEventUserName} not in allowUserTeams ${allowUserTeams}`);
                 }
