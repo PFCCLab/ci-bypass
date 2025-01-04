@@ -18,28 +18,36 @@ jobs:
     outputs:
       can-skip: ${{ steps.check_bypass.outputs.can-skip }}
     steps:
-      - name: Checkout
-        id: checkout
-        uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-      - id: check_bypass
+      - id: check-bypass
         uses: ./
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          skip-if:
-            any:
-              - type: "labeled"
-                label: ["skip-ci: codestyle", "skip-ci: all"]
-                user-team: "ci-team"
-              - type: "approved"
-                user: SigureMo
-              - type: "commented"
-                user: SigureMo
-                message-pattern: ".*skip ci.*"
+          skip-if: |
+            {
+              "any": [
+                {
+                  "type": "labeled",
+                  "label": ["skip-ci: codestyle", "skip-ci: all"],
+                  "user-team": "ci-team"
+                },
+                {
+                  "type": "approved",
+                  "user": "SigureMo"
+                },
+                {
+                  "type": "commented",
+                  "user": "SigureMo",
+                  "message-pattern": ".*skip ci.*"
+                }
+              ]
+            }
 
   test-action-not-bypass:
     needs: check-bypass
-    if: ${{ needs.check_bypass.outputs.can-skip != 'true' }}
+    if: ${{ needs.check-bypass.outputs.can-skip != 'true' }}
     name: Branch test bypass
     runs-on: ubuntu-latest
 
