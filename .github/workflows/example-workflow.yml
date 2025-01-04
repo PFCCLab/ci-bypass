@@ -28,7 +28,7 @@ jobs:
           # type: "labeled"
           # label: "ci-bypass: example | ci-bypass: all"
           # username: "SigureMo"
-          type: "composite"
+          type: 'composite'
           composite-rule: |
             {
               "all": [
