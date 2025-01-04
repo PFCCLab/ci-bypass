@@ -25781,7 +25781,7 @@ async function run() {
             const context = {};
             return (0, rules_1.checkRule)(value, context);
         }
-        const result = await (0, composite_1.resolveCompositeAsync)(check);
+        const result = await (0, composite_1.resolveCompositeAsync)(check)(skipIf);
         core.info(`check result: ${result}`);
         // Set outputs for other workflow steps to use
         core.setOutput('can-skip', result);

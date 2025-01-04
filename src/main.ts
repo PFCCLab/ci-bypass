@@ -16,7 +16,7 @@ export async function run(): Promise<void> {
       return checkRule(value, context)
     }
 
-    const result = await resolveCompositeAsync(check)
+    const result = await resolveCompositeAsync(check)(skipIf)
     core.info(`check result: ${result}`)
     // Set outputs for other workflow steps to use
     core.setOutput('can-skip', result)
