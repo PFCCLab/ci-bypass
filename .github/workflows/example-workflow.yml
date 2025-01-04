@@ -1,0 +1,46 @@
+name: Example Workflow
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  check-bypass:
+    name: Check Bypass
+    runs-on: ubuntu-latest
+    outputs:
+      canSkip: ${{ steps.check_bypass.outputs.canSkip }}
+    steps:
+      - id: check_bypass
+        uses: ./
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+  test-action-not-bypass:
+    needs: check-bypass
+    if: ${{ needs.check_bypass.outputs.canSkip != 'true' }}
+    name: Branch test bypass
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Action Not Skipped
+        id: not-bypass
+        run: echo "::error ::Action not skipped"
+
+  test-action-bypass:
+    needs: check-bypass
+    if: ${{ needs.check-bypass.outputs.canSkip == 'true' }}
+    name: Branch test not bypass
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Action Skipped
+        id: bypass
+        run: echo "::error ::Action skipped"
