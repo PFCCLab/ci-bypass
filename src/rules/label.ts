@@ -51,6 +51,9 @@ export class LabelRule extends AbstractRule {
       currentEventUserName: string,
       allowUserNames: string[]
     ) => {
+      if (allowUserNames.length === 0) {
+        return true
+      }
       const result = allowUserNames.includes(currentEventUserName)
       if (!result) {
         core.info(`user ${currentEventUserName} not in allowUserNames`)
@@ -61,15 +64,16 @@ export class LabelRule extends AbstractRule {
       currentEventUserName: string,
       allowUserTeams: string[]
     ) => {
+      if (allowUserTeams.length === 0) {
+        return true
+      }
       return await Promise.all(
         allowUserTeams.map(async (team) => {
-          core.info(`Before get teamMembers ${team} in ${owner}`)
           try {
             const { data: teamMembers } = await octokit.rest.teams.listMembersInOrg({
               org: owner,
               team_slug: team,
             })
-            core.info(`After get teamMembers ${team}`)
             return teamMembers.map((member) => member.login)
           } catch (error) {
             core.error(
@@ -80,9 +84,6 @@ export class LabelRule extends AbstractRule {
         })
       ).then((results) => {
         const result = results.some((members) => members.includes(currentEventUserName))
-        core.info(
-          `user ${currentEventUserName} in allowUserTeams ${allowUserTeams} result ${result}`
-        )
         if (!result) {
           core.info(`user ${currentEventUserName} not in allowUserTeams ${allowUserTeams}`)
         }

@@ -30246,6 +30246,9 @@ class LabelRule extends base_1.AbstractRule {
             .filter((label) => this.labels.includes(label));
         const labeledEvents = allEventsResponse.data.filter((event) => event.event === 'labeled');
         const isValidLabeledUserByName = async (currentEventUserName, allowUserNames) => {
+            if (allowUserNames.length === 0) {
+                return true;
+            }
             const result = allowUserNames.includes(currentEventUserName);
             if (!result) {
                 core.info(`user ${currentEventUserName} not in allowUserNames`);
@@ -30253,14 +30256,15 @@ class LabelRule extends base_1.AbstractRule {
             return result;
         };
         const isValidLabeledUserByTeam = async (currentEventUserName, allowUserTeams) => {
+            if (allowUserTeams.length === 0) {
+                return true;
+            }
             return await Promise.all(allowUserTeams.map(async (team) => {
-                core.info(`Before get teamMembers ${team} in ${owner}`);
                 try {
                     const { data: teamMembers } = await octokit.rest.teams.listMembersInOrg({
                         org: owner,
                         team_slug: team,
                     });
-                    core.info(`After get teamMembers ${team}`);
                     return teamMembers.map((member) => member.login);
                 }
                 catch (error) {
@@ -30269,7 +30273,6 @@ class LabelRule extends base_1.AbstractRule {
                 }
             })).then((results) => {
                 const result = results.some((members) => members.includes(currentEventUserName));
-                core.info(`user ${currentEventUserName} in allowUserTeams ${allowUserTeams} result ${result}`);
                 if (!result) {
                     core.info(`user ${currentEventUserName} not in allowUserTeams ${allowUserTeams}`);
                 }
