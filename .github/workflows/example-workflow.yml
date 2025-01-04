@@ -31,7 +31,7 @@ jobs:
               "any": [
                 {
                   "type": "labeled",
-                  "label": ["skip-ci: example", "skip-ci: all"],
+                  "label": ["ci-bypass: example", "ci-bypass: all"],
                   "user-team": "ci-infra"
                 }
               ]

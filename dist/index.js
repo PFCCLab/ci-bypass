@@ -30191,25 +30191,44 @@ exports.LabelRule = void 0;
 const base_1 = __nccwpck_require__(580);
 const github_1 = __nccwpck_require__(819);
 const core = __importStar(__nccwpck_require__(9999));
+function resolveOneOrMoreOption(value) {
+    return Array.isArray(value) ? value : [value];
+}
+function resolveMaybeOneOrMoreOption(value) {
+    return value ? resolveOneOrMoreOption(value) : [];
+}
 class LabelRule extends base_1.AbstractRule {
     static type = 'labeled';
-    label;
-    userName;
-    userTeam;
+    labels;
+    userNames;
+    userTeams;
     constructor(label, userName, userTeam) {
         super();
-        this.label = label;
-        this.userName = userName ?? null;
-        this.userTeam = userTeam ?? null;
+        this.labels = resolveOneOrMoreOption(label);
+        this.userNames = resolveMaybeOneOrMoreOption(userName);
+        this.userTeams = resolveMaybeOneOrMoreOption(userTeam);
     }
     async check(context) {
         const { githubToken, githubContext } = context;
         const octokit = (0, github_1.getOctokit)(githubToken);
         const { owner, repo } = githubContext.repo;
         const { number } = githubContext.issue;
-        const allEvents = await octokit.rest.issues.listEvents({ owner, repo, issue_number: number });
-        const labeledEvents = allEvents.data.filter((event) => event.event === 'labeled');
+        const allEventsResponse = await octokit.rest.issues.listEvents({
+            owner,
+            repo,
+            issue_number: number,
+        });
+        const allLabelsResponse = await octokit.rest.issues.listLabelsOnIssue({
+            owner,
+            repo,
+            issue_number: number,
+        });
+        const currentLabels = allLabelsResponse.data
+            .map((label) => label.name)
+            .filter((label) => this.labels.includes(label));
+        const labeledEvents = allEventsResponse.data.filter((event) => event.event === 'labeled');
         core.info(`labeledEvents: ${JSON.stringify(labeledEvents)}`);
+        core.info(`currentLabels: ${JSON.stringify(currentLabels)}`);
         return false;
     }
     static fromObject(obj) {
