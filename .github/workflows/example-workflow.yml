@@ -15,9 +15,6 @@ jobs:
   check-bypass:
     name: Check Bypass
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      organization: read
     outputs:
       can-skip: ${{ steps.check-bypass.outputs.can-skip }}
     steps:
