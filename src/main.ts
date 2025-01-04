@@ -3,6 +3,19 @@ import { context as githubContext } from '@actions/github'
 import { resolveCompositeAsync } from './composite.js'
 import { ByPassCheckerBuilder, LabelRule } from './rules/index.js'
 
+const ALLOWED_NON_PULL_REQUEST_EVENT_STRATEGIES = [
+  'always-skipped',
+  'always-passed',
+  'always-failed',
+]
+
+const PULL_REQUEST_EVENTS = [
+  'pull_request',
+  'pull_request_target',
+  'pull_request_review',
+  'pull_request_review_comment',
+]
+
 function parseArrayInput(input: string, separator: string): string[] {
   return input.split(separator).map((item) => item.trim())
 }
@@ -24,12 +37,30 @@ function parseRuleRawObjectFromInput(): any {
   }
 }
 
+function checkNonPullRequestEvent() {
+  const nonPullRequestEventStrategy = core.getInput('non-pull-request-event-strategy')
+  if (!PULL_REQUEST_EVENTS.includes(githubContext.eventName)) {
+    switch (nonPullRequestEventStrategy) {
+      case 'always-skipped':
+        core.setOutput('can-skip', true)
+        return true
+      case 'always-passed':
+        core.setOutput('can-skip', false)
+        return true
+      case 'always-failed':
+        throw new Error('This action only supports pull_request related events')
+    }
+  }
+  return false
+}
+
 /**
  * The main function for the action.
  * @returns {Promise<void>} Resolves when the action is complete.
  */
 export async function run(): Promise<void> {
   try {
+    if (checkNonPullRequestEvent()) return
     const githubToken: string = core.getInput('github-token')
     const rawRule = parseRuleRawObjectFromInput()
     core.info(`rawRule: ${JSON.stringify(rawRule)}`)

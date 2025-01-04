@@ -25,6 +25,7 @@ jobs:
         uses: ./
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          non-pull-request-event-strategy: 'always-skipped'
           # type: "labeled"
           # label: "ci-bypass: example | ci-bypass: all"
           # username: "SigureMo"

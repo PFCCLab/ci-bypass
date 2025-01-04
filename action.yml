@@ -1,6 +1,6 @@
-name: 'The name of your action here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'ci-bypass'
+description: 'A GitHub Action to bypass CI checks based on rules'
+author: 'SigureMo'
 
 # Add your action's branding here. This will appear on the GitHub Marketplace.
 branding:
@@ -27,6 +27,10 @@ inputs:
   composite-rule:
     description: 'Use any, all or not to combine multiple rules, need to be a JSON string'
     required: false
+  non-pull-request-event-strategy:
+    description: 'Strategy to apply to non-pull-request events, can be always-skipped, always-passed, or always-failed, default is always-failed'
+    required: true
+    default: 'always-failed'
 
 # Define your outputs here.
 outputs:
