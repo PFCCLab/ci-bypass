@@ -34,7 +34,7 @@ jobs:
             {
                 "type": "labeled",
                 "label": ["ci-bypass: example", "ci-bypass: all"],
-                "username": ["SigureMo"]
+                "username": []
             }
 
   test-action-not-bypass:
