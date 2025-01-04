@@ -19,6 +19,7 @@ inputs:
   skip-if:
     description: 'When to skip the action'
     required: true
+    type: object
 
 # Define your outputs here.
 outputs:
