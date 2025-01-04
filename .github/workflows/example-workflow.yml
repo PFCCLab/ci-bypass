@@ -28,7 +28,7 @@ jobs:
         name: Check Bypass
         uses: ./
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.PERSONAL_TOKEN }}
           skip-if: |
             {
               "any": [
