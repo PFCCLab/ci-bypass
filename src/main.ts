@@ -3,23 +3,39 @@ import { context as githubContext } from '@actions/github'
 import { resolveCompositeAsync } from './composite'
 import { ByPassCheckerBuilder, LabelRule } from './rules'
 
+function parseRuleRawObjectFromInput(): any {
+  const type = core.getInput('type')
+  switch (type) {
+    case 'labeled':
+      return {
+        type: 'labeled',
+        label: core.getInput('label'),
+        username: core.getInput('username'),
+        'user-team': core.getInput('user-team'),
+      }
+    case 'composite':
+      return JSON.parse(core.getInput('composite-rules'))
+    default:
+      throw new Error(`Invalid rule type: ${type}`)
+  }
+}
+
 /**
  * The main function for the action.
  * @returns {Promise<void>} Resolves when the action is complete.
  */
 export async function run(): Promise<void> {
   try {
-    const skipIf: any = JSON.parse(core.getInput('skip-if'))
     const githubToken: string = core.getInput('github-token')
-
-    core.info(`skip-if: ${skipIf}`)
+    const rawRule = parseRuleRawObjectFromInput()
+    core.info(`rawRule: ${JSON.stringify(rawRule)}`)
 
     async function check(value: any): Promise<boolean> {
       const bypassChecker = new ByPassCheckerBuilder().use(LabelRule).build()
       return bypassChecker.check(value, { githubToken, githubContext })
     }
 
-    const result = await resolveCompositeAsync(check)(skipIf)
+    const result = await resolveCompositeAsync(check)(rawRule)
     core.info(`check result: ${result}`)
     // Set outputs for other workflow steps to use
     core.setOutput('can-skip', result)

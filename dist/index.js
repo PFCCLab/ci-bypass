@@ -30042,20 +30042,36 @@ const core = __importStar(__nccwpck_require__(9999));
 const github_1 = __nccwpck_require__(819);
 const composite_1 = __nccwpck_require__(226);
 const rules_1 = __nccwpck_require__(205);
+function parseRuleRawObjectFromInput() {
+    const type = core.getInput('type');
+    switch (type) {
+        case 'labeled':
+            return {
+                type: 'labeled',
+                label: core.getInput('label'),
+                username: core.getInput('username'),
+                'user-team': core.getInput('user-team'),
+            };
+        case 'composite':
+            return JSON.parse(core.getInput('composite-rules'));
+        default:
+            throw new Error(`Invalid rule type: ${type}`);
+    }
+}
 /**
  * The main function for the action.
  * @returns {Promise<void>} Resolves when the action is complete.
  */
 async function run() {
     try {
-        const skipIf = JSON.parse(core.getInput('skip-if'));
         const githubToken = core.getInput('github-token');
-        core.info(`skip-if: ${skipIf}`);
+        const rawRule = parseRuleRawObjectFromInput();
+        core.info(`rawRule: ${JSON.stringify(rawRule)}`);
         async function check(value) {
             const bypassChecker = new rules_1.ByPassCheckerBuilder().use(rules_1.LabelRule).build();
             return bypassChecker.check(value, { githubToken, githubContext: github_1.context });
         }
-        const result = await (0, composite_1.resolveCompositeAsync)(check)(skipIf);
+        const result = await (0, composite_1.resolveCompositeAsync)(check)(rawRule);
         core.info(`check result: ${result}`);
         // Set outputs for other workflow steps to use
         core.setOutput('can-skip', result);
@@ -30274,7 +30290,7 @@ class LabelRule extends base_1.AbstractRule {
         return await Promise.all(currentLabels.map(isValidLabel)).then((results) => results.some(Boolean));
     }
     static fromObject(obj) {
-        return new LabelRule(obj.label, obj['user-name'], obj['user-team']);
+        return new LabelRule(obj.label, obj['username'], obj['user-team']);
     }
 }
 exports.LabelRule = LabelRule;

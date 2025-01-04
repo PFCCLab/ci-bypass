@@ -26,16 +26,19 @@ jobs:
         uses: ./
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          skip-if: |
-            {
-              "any": [
-                {
-                  "type": "labeled",
-                  "label": ["ci-bypass: example", "ci-bypass: all"],
-                  "user-team": "ci-infra"
-                }
-              ]
-            }
+          type: "labeled"
+          label: ["ci-bypass: example", "ci-bypass: all"]
+          username: ["SigureMo"]
+          # composite-rules: |
+          #   {
+          #     "any": [
+          #       {
+          #         "type": "labeled",
+          #         "label": ["ci-bypass: example", "ci-bypass: all"],
+          #         "user-team": "ci-infra"
+          #       }
+          #     ]
+          #   }
 
   test-action-not-bypass:
     needs: check-bypass

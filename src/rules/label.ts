@@ -110,6 +110,6 @@ export class LabelRule extends AbstractRule {
   }
 
   public static fromObject(obj: any): LabelRule {
-    return new LabelRule(obj.label, obj['user-name'], obj['user-team'])
+    return new LabelRule(obj.label, obj['username'], obj['user-team'])
   }
 }
