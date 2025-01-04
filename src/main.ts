@@ -14,7 +14,7 @@ export async function run(): Promise<void> {
     async function check(value: any): Promise<boolean> {
       const context = {}
       const bypassChecker = new ByPassCheckerBuilder().use(LabelRule).build()
-      return bypassChecker.check(skipIf, context)
+      return bypassChecker.check(value, context)
     }
 
     const result = await resolveCompositeAsync(check)(skipIf)

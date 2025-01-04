@@ -25780,7 +25780,7 @@ async function run() {
         async function check(value) {
             const context = {};
             const bypassChecker = new rules_1.ByPassCheckerBuilder().use(rules_1.LabelRule).build();
-            return bypassChecker.check(skipIf, context);
+            return bypassChecker.check(value, context);
         }
         const result = await (0, composite_1.resolveCompositeAsync)(check)(skipIf);
         core.info(`check result: ${result}`);
