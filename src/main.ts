@@ -1,5 +1,28 @@
 import * as core from '@actions/core'
-import { wait } from './wait'
+import { context as githubContext } from '@actions/github'
+import { resolveCompositeAsync } from './composite'
+import { ByPassCheckerBuilder, LabelRule } from './rules'
+
+function parseArrayInput(input: string, separator: string): string[] {
+  return input.split(separator).map((item) => item.trim())
+}
+
+function parseRuleRawObjectFromInput(): any {
+  const type = core.getInput('type')
+  switch (type) {
+    case LabelRule.type:
+      return {
+        type: LabelRule.type,
+        label: parseArrayInput(core.getInput('label'), '|'),
+        username: parseArrayInput(core.getInput('username'), '|'),
+        'user-team': parseArrayInput(core.getInput('user-team'), '|'),
+      }
+    case 'composite':
+      return JSON.parse(core.getInput('composite-rule'))
+    default:
+      throw new Error(`Invalid rule type: ${type}`)
+  }
+}
 
 /**
  * The main function for the action.
@@ -7,18 +30,19 @@ import { wait } from './wait'
  */
 export async function run(): Promise<void> {
   try {
-    const ms: string = core.getInput('milliseconds')
+    const githubToken: string = core.getInput('github-token')
+    const rawRule = parseRuleRawObjectFromInput()
+    core.info(`rawRule: ${JSON.stringify(rawRule)}`)
 
-    // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
-    core.debug(`Waiting ${ms} milliseconds ...`)
+    async function check(value: any): Promise<boolean> {
+      const bypassChecker = new ByPassCheckerBuilder().use(LabelRule).build()
+      return bypassChecker.check(value, { githubToken, githubContext })
+    }
 
-    // Log the current timestamp, wait, then log the new timestamp
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
-
+    const result = await resolveCompositeAsync(check)(rawRule)
+    core.info(`check result: ${result}`)
     // Set outputs for other workflow steps to use
-    core.setOutput('time', new Date().toTimeString())
+    core.setOutput('can-skip', result)
   } catch (error) {
     // Fail the workflow run if an error occurs
     if (error instanceof Error) core.setFailed(error.message)

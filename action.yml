@@ -9,15 +9,29 @@ branding:
 
 # Define your inputs here.
 inputs:
-  milliseconds:
-    description: 'Your input description here'
+  github-token:
+    description: 'GitHub token to interact with the GitHub API'
+    required: false
+  type:
+    description: 'Type of the rule, can be labeled, commented, approved, or composite'
     required: true
-    default: '1000'
+  label:
+    description: 'Label name, can be a string or an array of strings'
+    required: false
+  username:
+    description: 'Username, can be a string or an array of strings'
+    required: false
+  user-team:
+    description: 'User team, can be a string or an array of strings'
+    required: false
+  composite-rule:
+    description: 'Use any, all or not to combine multiple rules, need to be a JSON string'
+    required: false
 
 # Define your outputs here.
 outputs:
-  time:
-    description: 'Your output description here'
+  can-skip:
+    description: 'Whether the action can be skipped'
 
 runs:
   using: node20

@@ -31,11 +31,13 @@
     "format:check": "pnpm prettier --check .",
     "run-local-action": "pnpm local-action . src/main.ts .env",
     "package": "pnpm ncc build src/index.ts -o dist --source-map --license licenses.txt",
-    "package:watch": "pnpm run package -- --watch"
+    "package:watch": "pnpm run package --watch",
+    "test": "pnpm vitest"
   },
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "^1.11.1"
+    "@actions/core": "^1.11.1",
+    "@actions/github": "^6.0.0"
   },
   "devDependencies": {
     "@github/local-action": "^2.2.1",
@@ -43,6 +45,7 @@
     "@vercel/ncc": "^0.38.3",
     "prettier": "^3.4.2",
     "tsx": "^4.19.2",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
   }
 }
