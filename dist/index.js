@@ -25635,6 +25635,97 @@ module.exports = {
 
 /***/ }),
 
+/***/ 226:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.resolveComposite = resolveComposite;
+exports.isCompositeTrue = isCompositeTrue;
+exports.resolveCompositeAsync = resolveCompositeAsync;
+exports.isCompositeTrueAsync = isCompositeTrueAsync;
+function isAnyComposite(composite) {
+    return composite.any !== undefined;
+}
+function isAllComposite(composite) {
+    return composite.all !== undefined;
+}
+function isNotComposite(composite) {
+    return composite.not !== undefined;
+}
+function resolveAnyCompositeHighterOrder(predicate) {
+    return (composite) => composite.any.some(predicate);
+}
+function resolveAllComposite(predicate) {
+    return (composite) => composite.all.every(predicate);
+}
+function resolveNotComposite(predicate) {
+    return (composite) => !predicate(composite.not);
+}
+function resolveComposite(predicate) {
+    function predicateForComposite(value) {
+        return resolveComposite(predicate)(value);
+    }
+    return (composite) => {
+        if (isAnyComposite(composite)) {
+            return resolveAnyCompositeHighterOrder(predicateForComposite)(composite);
+        }
+        else if (isAllComposite(composite)) {
+            return resolveAllComposite(predicateForComposite)(composite);
+        }
+        else if (isNotComposite(composite)) {
+            return resolveNotComposite(predicateForComposite)(composite);
+        }
+        else {
+            return predicate(composite);
+        }
+    };
+}
+function isCompositeTrue(composite, predicate) {
+    return resolveComposite(predicate)(composite);
+}
+function resolveCompositeAnyAsync(predicate) {
+    return async (composite) => {
+        const results = await Promise.all(composite.any.map(async (value) => await predicate(value)));
+        return results.some((value) => value);
+    };
+}
+function resolveCompositeAllAsync(predicate) {
+    return async (composite) => {
+        const results = await Promise.all(composite.all.map(async (value) => await predicate(value)));
+        return results.every((value) => value);
+    };
+}
+function resolveCompositeNotAsync(predicate) {
+    return async (composite) => !(await predicate(composite.not));
+}
+function resolveCompositeAsync(predicate) {
+    async function predicateForComposite(value) {
+        return resolveCompositeAsync(predicate)(value);
+    }
+    return async (composite) => {
+        if (isAnyComposite(composite)) {
+            return resolveCompositeAnyAsync(predicateForComposite)(composite);
+        }
+        else if (isAllComposite(composite)) {
+            return resolveCompositeAllAsync(predicateForComposite)(composite);
+        }
+        else if (isNotComposite(composite)) {
+            return resolveCompositeNotAsync(predicateForComposite)(composite);
+        }
+        else {
+            return await predicate(composite);
+        }
+    };
+}
+async function isCompositeTrueAsync(composite, predicate) {
+    return resolveCompositeAsync(predicate)(composite);
+}
+
+
+/***/ }),
+
 /***/ 3084:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -25676,6 +25767,8 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.run = run;
 const core = __importStar(__nccwpck_require__(9999));
+const composite_1 = __nccwpck_require__(226);
+const rules_1 = __nccwpck_require__(205);
 /**
  * The main function for the action.
  * @returns {Promise<void>} Resolves when the action is complete.
@@ -25684,8 +25777,14 @@ async function run() {
     try {
         const skipIf = JSON.parse(core.getInput('skip-if'));
         core.info(`skip-if: ${skipIf}`);
+        async function check(value) {
+            const context = {};
+            return (0, rules_1.checkRule)(value, context);
+        }
+        const result = await (0, composite_1.resolveCompositeAsync)(check);
+        core.info(`check result: ${result}`);
         // Set outputs for other workflow steps to use
-        core.setOutput('can-skip', true);
+        core.setOutput('can-skip', result);
     }
     catch (error) {
         // Fail the workflow run if an error occurs
@@ -25693,6 +25792,65 @@ async function run() {
             core.setFailed(error.message);
     }
 }
+
+
+/***/ }),
+
+/***/ 580:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.RuleFactory = exports.AbstractRule = void 0;
+exports.checkRule = checkRule;
+class AbstractRule {
+    static fromObject(obj) {
+        throw new Error('fromObject method must be implemented');
+    }
+}
+exports.AbstractRule = AbstractRule;
+class RuleFactory {
+    static instance;
+    ruleClasses = new Map();
+    constructor() { }
+    static getInstance() {
+        if (!RuleFactory.instance) {
+            RuleFactory.instance = new RuleFactory();
+        }
+        return RuleFactory.instance;
+    }
+    registerRuleType(type, ruleClass) {
+        this.ruleClasses.set(type, ruleClass);
+    }
+    getRuleClass(type) {
+        return this.ruleClasses.get(type);
+    }
+}
+exports.RuleFactory = RuleFactory;
+async function checkRule(rule, context) {
+    if (!rule || typeof rule !== 'object' || !rule.type) {
+        throw new Error('Invalid rule object');
+    }
+    const ruleInstance = RuleFactory.getInstance().getRuleClass(rule.type)?.fromObject(rule);
+    if (!ruleInstance) {
+        throw new Error(`Unsupported rule type: ${rule.type}`);
+    }
+    return await ruleInstance.check(context);
+}
+
+
+/***/ }),
+
+/***/ 205:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.checkRule = void 0;
+var base_1 = __nccwpck_require__(580);
+Object.defineProperty(exports, "checkRule", ({ enumerable: true, get: function () { return base_1.checkRule; } }));
 
 
 /***/ }),

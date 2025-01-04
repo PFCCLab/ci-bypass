@@ -1,0 +1,1 @@
+export { checkRule } from './base'

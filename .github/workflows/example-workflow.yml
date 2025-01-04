@@ -33,15 +33,6 @@ jobs:
                   "type": "labeled",
                   "label": ["skip-ci: codestyle", "skip-ci: all"],
                   "user-team": "ci-team"
-                },
-                {
-                  "type": "approved",
-                  "user": "SigureMo"
-                },
-                {
-                  "type": "commented",
-                  "user": "SigureMo",
-                  "message-pattern": ".*skip ci.*"
                 }
               ]
             }
