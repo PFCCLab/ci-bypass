@@ -8,13 +8,12 @@ on:
     branches:
       - main
 
-permissions:
-  contents: read
-
 jobs:
   check-bypass:
     name: Check Bypass
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       can-skip: ${{ steps.check-bypass.outputs.can-skip }}
     steps:
