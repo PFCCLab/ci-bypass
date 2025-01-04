@@ -30287,8 +30287,8 @@ class LabelRule extends base_1.AbstractRule {
             core.error(`label ${label} not found in labeledEvents`);
             return false;
         };
-        core.info(`labeledEvents: ${JSON.stringify(labeledEvents)}`);
-        core.info(`currentLabels: ${JSON.stringify(currentLabels)}`);
+        core.debug(`labeledEvents: ${JSON.stringify(labeledEvents)}`);
+        core.debug(`currentLabels: ${JSON.stringify(currentLabels)}`);
         return await Promise.all(currentLabels.map(isValidLabel)).then((results) => results.some(Boolean));
     }
     static fromObject(obj) {
