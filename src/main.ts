@@ -6,7 +6,7 @@ import * as core from '@actions/core'
  */
 export async function run(): Promise<void> {
   try {
-    const skipIf: any = core.getInput('skip-if')
+    const skipIf: any = JSON.parse(core.getInput('skip-if'))
     core.info(`skip-if: ${skipIf}`)
 
     // Set outputs for other workflow steps to use
