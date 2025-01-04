@@ -30263,7 +30263,7 @@ class LabelRule extends base_1.AbstractRule {
         };
         core.info(`labeledEvents: ${JSON.stringify(labeledEvents)}`);
         core.info(`currentLabels: ${JSON.stringify(currentLabels)}`);
-        return false;
+        return await Promise.all(currentLabels.map(isValidLabel)).then((results) => results.some(Boolean));
     }
     static fromObject(obj) {
         return new LabelRule(obj.label, obj['user-name'], obj['user-team']);

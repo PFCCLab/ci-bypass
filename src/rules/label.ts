@@ -77,7 +77,7 @@ export class LabelRule extends AbstractRule {
       }
       return result
     }
-    const isValidLabel = async (label: string) => {
+    const isValidLabel = async (label: string): Promise<Boolean> => {
       for (const labeledEvent of labeledEvents.reverse()) {
         if ('label' in labeledEvent && labeledEvent.label.name === label) {
           return (
@@ -91,7 +91,9 @@ export class LabelRule extends AbstractRule {
     }
     core.info(`labeledEvents: ${JSON.stringify(labeledEvents)}`)
     core.info(`currentLabels: ${JSON.stringify(currentLabels)}`)
-    return false
+    return await Promise.all(currentLabels.map(isValidLabel)).then((results) =>
+      results.some(Boolean)
+    )
   }
 
   public static fromObject(obj: any): LabelRule {
