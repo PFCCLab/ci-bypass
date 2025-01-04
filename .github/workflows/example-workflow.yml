@@ -26,19 +26,20 @@ jobs:
         uses: ./
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          type: "labeled"
-          label: "ci-bypass: example | ci-bypass: all"
-          username: "SigureMo"
-          # composite-rules: |
-          #   {
-          #     "any": [
-          #       {
-          #         "type": "labeled",
-          #         "label": ["ci-bypass: example", "ci-bypass: all"],
-          #         "user-team": "ci-infra"
-          #       }
-          #     ]
-          #   }
+          # type: "labeled"
+          # label: "ci-bypass: example | ci-bypass: all"
+          # username: "SigureMo"
+          type: "composite"
+          composite-rules: |
+            {
+              "all": [
+                {
+                  "type": "labeled",
+                  "label": ["ci-bypass: example", "ci-bypass: all"],
+                  "username": ["SigureMo"]
+                }
+              ]
+            }
 
   test-action-not-bypass:
     needs: check-bypass
