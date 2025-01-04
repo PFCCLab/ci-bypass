@@ -6,5 +6,5 @@ export default defineConfig({
   output: {
     file: 'dist/index.js',
   },
-  plugins: [nodeExternals()],
+  plugins: [nodeExternals({ deps: false })],
 })

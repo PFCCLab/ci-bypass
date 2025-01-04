@@ -31,7 +31,7 @@
     "format:write": "pnpm prettier --write .",
     "format:check": "pnpm prettier --check .",
     "run-local-action": "pnpm local-action . src/main.ts .env",
-    "package": "pnpm rolldown -c rolldown.config.js",
+    "package": "pnpm vite build --outDir dist",
     "package:watch": "pnpm run package --watch",
     "test": "pnpm vitest"
   },

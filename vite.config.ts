@@ -13,5 +13,5 @@ export default defineConfig({
       formats: ['es'],
     },
   },
-  plugins: [nodeExternals()],
+  plugins: [nodeExternals({ deps: false })],
 })
