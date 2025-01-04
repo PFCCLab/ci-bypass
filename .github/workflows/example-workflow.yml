@@ -16,7 +16,7 @@ jobs:
     name: Check Bypass
     runs-on: ubuntu-latest
     outputs:
-      can-skip: ${{ steps.check_bypass.outputs.can-skip }}
+      can-skip: ${{ steps.check-bypass.outputs.can-skip }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -49,7 +49,7 @@ jobs:
   test-action-not-bypass:
     needs: check-bypass
     if: ${{ needs.check-bypass.outputs.can-skip != 'true' }}
-    name: Branch test bypass
+    name: Branch not bypass
     runs-on: ubuntu-latest
 
     steps:
@@ -60,7 +60,7 @@ jobs:
   test-action-bypass:
     needs: check-bypass
     if: ${{ needs.check-bypass.outputs.can-skip == 'true' }}
-    name: Branch test not bypass
+    name: Branch bypass
     runs-on: ubuntu-latest
 
     steps:
