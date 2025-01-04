@@ -25829,7 +25829,7 @@ class ByPassChecker {
     }
     async check(rule, context) {
         if (!rule || typeof rule !== 'object' || !rule.type) {
-            throw new Error('Invalid rule object');
+            throw new Error(`Invalid rule object ${JSON.stringify(rule)}`);
         }
         console.log(this.ruleClasses);
         const ruleInstance = this.getRuleClass(rule.type)?.fromObject(rule);

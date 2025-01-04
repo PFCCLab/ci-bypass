@@ -9,7 +9,7 @@ export class ByPassChecker {
   }
   public async check(rule: any, context: any): Promise<boolean> {
     if (!rule || typeof rule !== 'object' || !rule.type) {
-      throw new Error('Invalid rule object')
+      throw new Error(`Invalid rule object ${JSON.stringify(rule)}`)
     }
     console.log(this.ruleClasses)
     const ruleInstance = this.getRuleClass(rule.type)?.fromObject(rule)
