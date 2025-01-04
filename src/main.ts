@@ -5,7 +5,7 @@ import { ByPassCheckerBuilder, LabelRule } from './rules/index.js'
 
 const ALLOWED_NON_PULL_REQUEST_EVENT_STRATEGIES = [
   'always-skipped',
-  'always-passed',
+  'never-skipped',
   'always-failed',
 ]
 
@@ -39,12 +39,16 @@ function parseRuleRawObjectFromInput(): any {
 
 function checkNonPullRequestEvent() {
   const nonPullRequestEventStrategy = core.getInput('non-pull-request-event-strategy')
+  core.debug(
+    `Checking non-pull-request event strategy: ${nonPullRequestEventStrategy}, eventName: ${githubContext.eventName}`
+  )
   if (!PULL_REQUEST_EVENTS.includes(githubContext.eventName)) {
+    core.debug('This is not a pull_request related event')
     switch (nonPullRequestEventStrategy) {
       case 'always-skipped':
         core.setOutput('can-skip', true)
         return true
-      case 'always-passed':
+      case 'never-skipped':
         core.setOutput('can-skip', false)
         return true
       case 'always-failed':

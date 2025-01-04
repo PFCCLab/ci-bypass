@@ -12,6 +12,10 @@ inputs:
   github-token:
     description: 'GitHub token to interact with the GitHub API'
     required: false
+  non-pull-request-event-strategy:
+    description: 'Strategy to apply to non-pull-request events, can be always-skipped, never-skipped, or always-failed, default is always-failed'
+    required: true
+    default: 'always-failed'
   type:
     description: 'Type of the rule, can be labeled, commented, approved, or composite'
     required: true
@@ -27,10 +31,6 @@ inputs:
   composite-rule:
     description: 'Use any, all or not to combine multiple rules, need to be a JSON string'
     required: false
-  non-pull-request-event-strategy:
-    description: 'Strategy to apply to non-pull-request events, can be always-skipped, always-passed, or always-failed, default is always-failed'
-    required: true
-    default: 'always-failed'
 
 # Define your outputs here.
 outputs:
