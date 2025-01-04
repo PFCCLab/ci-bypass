@@ -1,7 +1,7 @@
-import { AbstractRule } from './base'
 import { getOctokit } from '@actions/github'
 import * as core from '@actions/core'
-import { PullRequestContext } from 'src/context'
+import { AbstractRule } from './base.js'
+import { PullRequestContext } from '../context.js'
 
 function resolveOneOrMoreOption<T>(value: T | T[]): T[] {
   return Array.isArray(value) ? value : [value]

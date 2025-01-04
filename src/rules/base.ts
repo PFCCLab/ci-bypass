@@ -1,4 +1,4 @@
-import { PullRequestContext } from '../context'
+import { PullRequestContext } from '../context.js'
 
 export interface Rule {
   check(context: any): Promise<boolean>

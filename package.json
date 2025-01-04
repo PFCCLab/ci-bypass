@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "author": "",
   "private": true,
+  "type": "module",
   "packageManager": "pnpm@9.15.1",
   "homepage": "https://github.com/PFCCLab/ci-bypass",
   "repository": {
@@ -30,7 +31,7 @@
     "format:write": "pnpm prettier --write .",
     "format:check": "pnpm prettier --check .",
     "run-local-action": "pnpm local-action . src/main.ts .env",
-    "package": "pnpm ncc build src/index.ts -o dist --source-map --license licenses.txt",
+    "package": "pnpm vite build --outDir dist",
     "package:watch": "pnpm run package --watch",
     "test": "pnpm vitest"
   },
@@ -42,10 +43,11 @@
   "devDependencies": {
     "@github/local-action": "^2.2.1",
     "@types/node": "^22.10.4",
-    "@vercel/ncc": "^0.38.3",
     "prettier": "^3.4.2",
+    "rollup-plugin-node-externals": "^8.0.0",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",
+    "vite": "^6.0.7",
     "vitest": "^2.1.8"
   }
 }

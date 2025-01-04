@@ -1,3 +1,3 @@
-export { ByPassCheckerBuilder, ByPassChecker } from './check'
-export { LabelRule } from './label'
-export { type RuleConstructor } from './base'
+export { ByPassCheckerBuilder, ByPassChecker } from './check.js'
+export { LabelRule } from './label.js'
+export { type RuleConstructor } from './base.js'
