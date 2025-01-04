@@ -27,8 +27,8 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           type: "labeled"
-          label: ["ci-bypass: example", "ci-bypass: all"]
-          username: ["SigureMo"]
+          label: "ci-bypass: example | ci-bypass: all"
+          username: "SigureMo"
           # composite-rules: |
           #   {
           #     "any": [

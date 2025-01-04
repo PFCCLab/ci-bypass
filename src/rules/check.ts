@@ -1,7 +1,5 @@
-import { AbstractRule, type RuleClass } from './base'
+import { type RuleConstructor } from './base'
 import { PullRequestContext } from '../context'
-
-type RuleConstructor = (new (...args: any[]) => AbstractRule) & RuleClass
 
 export class ByPassChecker {
   private ruleClasses: Map<string, RuleConstructor>
@@ -12,7 +10,6 @@ export class ByPassChecker {
     if (!rule || typeof rule !== 'object' || !rule.type) {
       throw new Error(`Invalid rule object ${JSON.stringify(rule)}`)
     }
-    console.log(this.ruleClasses)
     const ruleInstance = this.getRuleClass(rule.type)?.fromObject(rule)
     if (!ruleInstance) {
       throw new Error(`Unsupported rule type: ${rule.type}`)

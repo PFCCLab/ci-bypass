@@ -30042,15 +30042,18 @@ const core = __importStar(__nccwpck_require__(9999));
 const github_1 = __nccwpck_require__(819);
 const composite_1 = __nccwpck_require__(226);
 const rules_1 = __nccwpck_require__(205);
+function parseArrayInput(input, separator) {
+    return input.split(separator).map((item) => item.trim());
+}
 function parseRuleRawObjectFromInput() {
     const type = core.getInput('type');
     switch (type) {
-        case 'labeled':
+        case rules_1.LabelRule.type:
             return {
-                type: 'labeled',
-                label: core.getInput('label'),
-                username: core.getInput('username'),
-                'user-team': core.getInput('user-team'),
+                type: rules_1.LabelRule.type,
+                label: parseArrayInput(core.getInput('label'), '|'),
+                username: parseArrayInput(core.getInput('username'), '|'),
+                'user-team': parseArrayInput(core.getInput('user-team'), '|'),
             };
         case 'composite':
             return JSON.parse(core.getInput('composite-rules'));
@@ -30120,7 +30123,6 @@ class ByPassChecker {
         if (!rule || typeof rule !== 'object' || !rule.type) {
             throw new Error(`Invalid rule object ${JSON.stringify(rule)}`);
         }
-        console.log(this.ruleClasses);
         const ruleInstance = this.getRuleClass(rule.type)?.fromObject(rule);
         if (!ruleInstance) {
             throw new Error(`Unsupported rule type: ${rule.type}`);

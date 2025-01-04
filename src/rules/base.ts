@@ -17,3 +17,5 @@ export abstract class AbstractRule implements Rule {
     throw new Error('fromObject method must be implemented')
   }
 }
+
+export type RuleConstructor = (new (...args: any[]) => AbstractRule) & RuleClass

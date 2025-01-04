@@ -3,15 +3,19 @@ import { context as githubContext } from '@actions/github'
 import { resolveCompositeAsync } from './composite'
 import { ByPassCheckerBuilder, LabelRule } from './rules'
 
+function parseArrayInput(input: string, separator: string): string[] {
+  return input.split(separator).map((item) => item.trim())
+}
+
 function parseRuleRawObjectFromInput(): any {
   const type = core.getInput('type')
   switch (type) {
-    case 'labeled':
+    case LabelRule.type:
       return {
-        type: 'labeled',
-        label: core.getInput('label'),
-        username: core.getInput('username'),
-        'user-team': core.getInput('user-team'),
+        type: LabelRule.type,
+        label: parseArrayInput(core.getInput('label'), '|'),
+        username: parseArrayInput(core.getInput('username'), '|'),
+        'user-team': parseArrayInput(core.getInput('user-team'), '|'),
       }
     case 'composite':
       return JSON.parse(core.getInput('composite-rules'))
