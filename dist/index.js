@@ -30227,6 +30227,40 @@ class LabelRule extends base_1.AbstractRule {
             .map((label) => label.name)
             .filter((label) => this.labels.includes(label));
         const labeledEvents = allEventsResponse.data.filter((event) => event.event === 'labeled');
+        // async function isValidUserByName(userName: string) {
+        //   const { data: user } = await octokit.rest.users.getByUsername({ username: userName })
+        //   return user.login === userName
+        // }
+        const isValidLabeledUserByName = async (currentEventUserName, allowUserNames) => {
+            const result = allowUserNames.includes(currentEventUserName);
+            if (!result) {
+                core.info(`user ${currentEventUserName} not in allowUserNames`);
+            }
+            return result;
+        };
+        const isValidLabeledUserByTeam = async (currentEventUserName, allowUserTeams) => {
+            const { data: user } = await octokit.rest.teams.listMembersInOrg({
+                org: owner,
+                team_slug: currentEventUserName,
+            });
+            const result = user
+                .map((member) => member.login)
+                .some((login) => allowUserTeams.includes(login));
+            if (!result) {
+                core.info(`team ${currentEventUserName} not in allowUserTeams`);
+            }
+            return result;
+        };
+        const isValidLabel = async (label) => {
+            for (const labeledEvent of labeledEvents.reverse()) {
+                if ('label' in labeledEvent && labeledEvent.label.name === label) {
+                    return ((await isValidLabeledUserByName(labeledEvent.actor.login, this.userNames)) &&
+                        (await isValidLabeledUserByTeam(labeledEvent.actor.login, this.userTeams)));
+                }
+            }
+            core.error(`label ${label} not found in labeledEvents`);
+            return false;
+        };
         core.info(`labeledEvents: ${JSON.stringify(labeledEvents)}`);
         core.info(`currentLabels: ${JSON.stringify(currentLabels)}`);
         return false;
