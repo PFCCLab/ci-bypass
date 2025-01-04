@@ -63,7 +63,7 @@ export class LabelRule extends AbstractRule {
     ) => {
       return await Promise.all(
         allowUserTeams.map(async (team) => {
-          core.info(`Before get teamMembers ${team}`)
+          core.info(`Before get teamMembers ${team} in ${owner}`)
           const { data: teamMembers } = await octokit.rest.teams.listMembersInOrg({
             org: owner,
             team_slug: team,
