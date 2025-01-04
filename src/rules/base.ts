@@ -1,3 +1,5 @@
+import { PullRequestContext } from '../context'
+
 export interface Rule {
   check(context: any): Promise<boolean>
 }
@@ -9,7 +11,7 @@ export interface RuleClass {
 
 export abstract class AbstractRule implements Rule {
   static type: string
-  abstract check(context: any): Promise<boolean>
+  abstract check(context: PullRequestContext): Promise<boolean>
 
   static fromObject(obj: any): AbstractRule {
     throw new Error('fromObject method must be implemented')

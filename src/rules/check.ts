@@ -1,4 +1,5 @@
 import { AbstractRule, type RuleClass } from './base'
+import { PullRequestContext } from '../context'
 
 type RuleConstructor = (new (...args: any[]) => AbstractRule) & RuleClass
 
@@ -7,7 +8,7 @@ export class ByPassChecker {
   public constructor(ruleClasses: Map<string, RuleConstructor>) {
     this.ruleClasses = ruleClasses
   }
-  public async check(rule: any, context: any): Promise<boolean> {
+  public async check(rule: any, context: PullRequestContext): Promise<boolean> {
     if (!rule || typeof rule !== 'object' || !rule.type) {
       throw new Error(`Invalid rule object ${JSON.stringify(rule)}`)
     }

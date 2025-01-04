@@ -31,8 +31,8 @@ jobs:
               "any": [
                 {
                   "type": "labeled",
-                  "label": ["skip-ci: codestyle", "skip-ci: all"],
-                  "user-team": "ci-team"
+                  "label": ["skip-ci: example", "skip-ci: all"],
+                  "user-team": "ci-infra"
                 }
               ]
             }

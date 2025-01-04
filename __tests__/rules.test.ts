@@ -1,6 +1,7 @@
 import { describe, it, assert } from 'vitest'
 import { ByPassCheckerBuilder } from '../src/rules'
 import { AbstractRule } from '../src/rules/base'
+import { type PullRequestContext } from '../src/context'
 
 describe.concurrent('Test Rules', () => {
   class TestRule extends AbstractRule {
@@ -21,15 +22,15 @@ describe.concurrent('Test Rules', () => {
       type: 'test',
     }
     const bypassChecker = new ByPassCheckerBuilder().use(TestRule).build()
-    expect(await bypassChecker.check(rule, {})).toBe(true)
+    expect(await bypassChecker.check(rule, {} as PullRequestContext)).toBe(true)
   })
 
   it('check e2e invalid rule', async ({ expect }) => {
     const rule = {}
     const bypassChecker = new ByPassCheckerBuilder().use(TestRule).build()
-    await expect(async () => await bypassChecker.check(rule, {})).rejects.toThrowError(
-      'Invalid rule object'
-    )
+    await expect(
+      async () => await bypassChecker.check(rule, {} as PullRequestContext)
+    ).rejects.toThrowError('Invalid rule object')
   })
 
   it('check e2e unsupported rule', async ({ expect }) => {
@@ -37,8 +38,8 @@ describe.concurrent('Test Rules', () => {
       type: 'unsupported',
     }
     const bypassChecker = new ByPassCheckerBuilder().use(TestRule).build()
-    await expect(async () => await bypassChecker.check(rule, {})).rejects.toThrowError(
-      'Unsupported rule type: unsupported'
-    )
+    await expect(
+      async () => await bypassChecker.check(rule, {} as PullRequestContext)
+    ).rejects.toThrowError('Unsupported rule type: unsupported')
   })
 })

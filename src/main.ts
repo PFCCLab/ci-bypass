@@ -1,4 +1,5 @@
 import * as core from '@actions/core'
+import { context as githubContext } from '@actions/github'
 import { resolveCompositeAsync } from './composite'
 import { ByPassCheckerBuilder, LabelRule } from './rules'
 
@@ -9,12 +10,13 @@ import { ByPassCheckerBuilder, LabelRule } from './rules'
 export async function run(): Promise<void> {
   try {
     const skipIf: any = JSON.parse(core.getInput('skip-if'))
+    const githubToken: string = core.getInput('github-token')
+
     core.info(`skip-if: ${skipIf}`)
 
     async function check(value: any): Promise<boolean> {
-      const context = {}
       const bypassChecker = new ByPassCheckerBuilder().use(LabelRule).build()
-      return bypassChecker.check(value, context)
+      return bypassChecker.check(value, { githubToken, githubContext })
     }
 
     const result = await resolveCompositeAsync(check)(skipIf)
