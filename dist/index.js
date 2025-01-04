@@ -25682,7 +25682,7 @@ const core = __importStar(__nccwpck_require__(9999));
  */
 async function run() {
     try {
-        const skipIf = core.getInput('skip-if');
+        const skipIf = JSON.parse(core.getInput('skip-if'));
         core.info(`skip-if: ${skipIf}`);
         // Set outputs for other workflow steps to use
         core.setOutput('can-skip', true);
