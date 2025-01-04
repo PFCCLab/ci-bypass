@@ -27,5 +27,5 @@ outputs:
     description: 'Whether the action can be skipped'
 
 runs:
-  using: node22
+  using: node20
   main: dist/index.js

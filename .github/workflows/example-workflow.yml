@@ -22,6 +22,7 @@ jobs:
         uses: actions/checkout@v2
 
       - id: check-bypass
+        name: Check Bypass
         uses: ./
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
