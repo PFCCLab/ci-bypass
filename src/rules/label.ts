@@ -17,7 +17,7 @@ export class LabelRule extends AbstractRule {
   }
 
   public async check(context: any): Promise<boolean> {
-    return true
+    return false
   }
 
   public static fromObject(obj: any): LabelRule {

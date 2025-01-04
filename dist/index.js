@@ -25895,7 +25895,7 @@ class LabelRule extends base_1.AbstractRule {
         this.userTeam = userTeam ?? null;
     }
     async check(context) {
-        return true;
+        return false;
     }
     static fromObject(obj) {
         return new LabelRule(obj.label, obj.userName, obj.userTeam);
