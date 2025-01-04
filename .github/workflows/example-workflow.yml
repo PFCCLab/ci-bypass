@@ -18,6 +18,10 @@ jobs:
     outputs:
       canSkip: ${{ steps.check_bypass.outputs.canSkip }}
     steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+
       - id: check_bypass
         uses: ./
         with:
