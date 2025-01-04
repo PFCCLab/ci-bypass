@@ -1,7 +1,7 @@
 import { describe, it, assert } from 'vitest'
-import { ByPassCheckerBuilder } from '../src/rules'
-import { AbstractRule } from '../src/rules/base'
-import { type PullRequestContext } from '../src/context'
+import { ByPassCheckerBuilder } from '../src/rules/index.js'
+import { AbstractRule } from '../src/rules/base.js'
+import { type PullRequestContext } from '../src/context.js'
 
 describe.concurrent('Test Rules', () => {
   class TestRule extends AbstractRule {

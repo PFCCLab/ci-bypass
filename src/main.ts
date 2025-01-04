@@ -1,7 +1,7 @@
 import * as core from '@actions/core'
 import { context as githubContext } from '@actions/github'
-import { resolveCompositeAsync } from './composite'
-import { ByPassCheckerBuilder, LabelRule } from './rules'
+import { resolveCompositeAsync } from './composite.js'
+import { ByPassCheckerBuilder, LabelRule } from './rules/index.js'
 
 function parseArrayInput(input: string, separator: string): string[] {
   return input.split(separator).map((item) => item.trim())

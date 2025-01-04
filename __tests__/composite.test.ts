@@ -1,5 +1,5 @@
 import { describe, it, assert } from 'vitest'
-import { isCompositeTrue, isCompositeTrueAsync } from '../src/composite'
+import { isCompositeTrue, isCompositeTrueAsync } from '../src/composite.js'
 
 describe.concurrent('Test Composite', () => {
   function booleanIdentityWithTypeCheck(value: any): boolean {

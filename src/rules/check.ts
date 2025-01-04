@@ -1,5 +1,5 @@
-import { type RuleConstructor } from './base'
-import { PullRequestContext } from '../context'
+import { type RuleConstructor } from './base.js'
+import { PullRequestContext } from '../context.js'
 
 export class ByPassChecker {
   private ruleClasses: Map<string, RuleConstructor>
