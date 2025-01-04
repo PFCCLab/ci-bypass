@@ -38,6 +38,10 @@ jobs:
         id: pnpm-format-check
         run: pnpm run format:check
 
+      - name: Run Tests
+        id: pnpm-test
+        run: pnpm test
+
   # test-action:
   #   name: GitHub Actions Test
   #   runs-on: ubuntu-latest
