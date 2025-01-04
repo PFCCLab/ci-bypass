@@ -32,9 +32,13 @@ jobs:
           type: "composite"
           composite-rule: |
             {
-                "type": "labeled",
-                "label": ["ci-bypass: example", "ci-bypass: all"],
-                "username": []
+              "all": [
+                {
+                  "type": "labeled",
+                  "label": ["ci-bypass: example", "ci-bypass: all"],
+                  "username": ["SigureMo"]
+                }
+              ]
             }
 
   test-action-not-bypass:
