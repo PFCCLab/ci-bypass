@@ -18,7 +18,7 @@ function parseRuleRawObjectFromInput(): any {
         'user-team': parseArrayInput(core.getInput('user-team'), '|'),
       }
     case 'composite':
-      return JSON.parse(core.getInput('composite-rules'))
+      return JSON.parse(core.getInput('composite-rule'))
     default:
       throw new Error(`Invalid rule type: ${type}`)
   }
