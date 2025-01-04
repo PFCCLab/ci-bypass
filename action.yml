@@ -9,16 +9,22 @@ branding:
 
 # Define your inputs here.
 inputs:
-  milliseconds:
-    description: 'Your input description here'
+  # milliseconds:
+  #   description: 'Your input description here'
+  #   required: true
+  #   default: '1000'
+  github-token:
+    description: 'GitHub token to interact with the GitHub API'
+    required: false
+  skip-if:
+    description: 'When to skip the action'
     required: true
-    default: '1000'
 
 # Define your outputs here.
 outputs:
-  time:
-    description: 'Your output description here'
+  can-skip:
+    description: 'Whether the action can be skipped'
 
 runs:
-  using: node20
+  using: node22
   main: dist/index.js
