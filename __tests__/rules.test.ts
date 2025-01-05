@@ -1,4 +1,4 @@
-import { describe, it, assert } from 'vitest'
+import { describe, it } from 'vitest'
 import { ByPassCheckerBuilder } from '../src/rules/index.js'
 import { AbstractRule } from '../src/rules/base.js'
 import { type PullRequestContext } from '../src/context.js'

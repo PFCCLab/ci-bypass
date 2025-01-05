@@ -2,14 +2,12 @@ import { getOctokit } from '@actions/github'
 import * as core from '@actions/core'
 import { AbstractRule } from './base.js'
 import { PullRequestContext } from '../context.js'
-
-function resolveOneOrMoreOption<T>(value: T | T[]): T[] {
-  return Array.isArray(value) ? value : [value]
-}
-
-function resolveMaybeOneOrMoreOption<T>(value: T | T[] | undefined): T[] {
-  return value ? resolveOneOrMoreOption(value) : []
-}
+import {
+  resolveMaybeOneOrMoreOption,
+  resolveOneOrMoreOption,
+  isValidUserByName,
+  isValidUserByTeam,
+} from './utils.js'
 
 export class LabelRule extends AbstractRule {
   public static type: string = 'labeled'
@@ -47,56 +45,14 @@ export class LabelRule extends AbstractRule {
       .filter((label) => this.labels.includes(label))
 
     const labeledEvents = allEventsResponse.data.filter((event) => event.event === 'labeled')
-    const isValidLabeledUserByName = async (
-      currentEventUserName: string,
-      allowUserNames: string[]
-    ) => {
-      if (allowUserNames.length === 0) {
-        return true
-      }
-      const result = allowUserNames.includes(currentEventUserName)
-      if (!result) {
-        core.info(`user ${currentEventUserName} not in allowUserNames`)
-      }
-      return result
-    }
-    const isValidLabeledUserByTeam = async (
-      currentEventUserName: string,
-      allowUserTeams: string[]
-    ) => {
-      if (allowUserTeams.length === 0) {
-        return true
-      }
-      return await Promise.all(
-        allowUserTeams.map(async (team) => {
-          try {
-            const { data: teamMembers } = await octokit.rest.teams.listMembersInOrg({
-              org: owner,
-              team_slug: team,
-            })
-            return teamMembers.map((member) => member.login)
-          } catch (error) {
-            core.error(
-              `Error in get teamMembers ${team} in ${owner}, check your token has org:read permission`
-            )
-            throw error
-          }
-        })
-      ).then((results) => {
-        const result = results.some((members) => members.includes(currentEventUserName))
-        if (!result) {
-          core.info(`user ${currentEventUserName} not in allowUserTeams ${allowUserTeams}`)
-        }
-        return result
-      })
-    }
+
     const isValidLabel = async (label: string): Promise<Boolean> => {
       for (const labeledEvent of labeledEvents.reverse()) {
         if ('label' in labeledEvent && labeledEvent.label.name === label) {
           const currentEventUserName = labeledEvent.actor.login
           return (
-            (await isValidLabeledUserByName(currentEventUserName, this.userNames)) ||
-            (await isValidLabeledUserByTeam(currentEventUserName, this.userTeams))
+            (await isValidUserByName(currentEventUserName, this.userNames)) ||
+            (await isValidUserByTeam(githubContext, octokit, currentEventUserName, this.userTeams))
           )
         }
       }

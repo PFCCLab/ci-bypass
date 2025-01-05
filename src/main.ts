@@ -1,13 +1,7 @@
 import * as core from '@actions/core'
 import { context as githubContext } from '@actions/github'
 import { resolveCompositeAsync } from './composite.js'
-import { ByPassCheckerBuilder, LabelRule } from './rules/index.js'
-
-const ALLOWED_NON_PULL_REQUEST_EVENT_STRATEGIES = [
-  'always-skipped',
-  'never-skipped',
-  'always-failed',
-]
+import { ByPassCheckerBuilder, LabelRule, CommentRule } from './rules/index.js'
 
 const PULL_REQUEST_EVENTS = [
   'pull_request',
@@ -27,6 +21,13 @@ function parseRuleRawObjectFromInput(): any {
       return {
         type: LabelRule.type,
         label: parseArrayInput(core.getInput('label'), '|'),
+        username: parseArrayInput(core.getInput('username'), '|'),
+        'user-team': parseArrayInput(core.getInput('user-team'), '|'),
+      }
+    case CommentRule.type:
+      return {
+        type: CommentRule.type,
+        'message-pattern': parseArrayInput(core.getInput('message-pattern'), '|'),
         username: parseArrayInput(core.getInput('username'), '|'),
         'user-team': parseArrayInput(core.getInput('user-team'), '|'),
       }
@@ -53,6 +54,8 @@ function checkNonPullRequestEvent() {
         return true
       case 'always-failed':
         throw new Error('This action only supports pull_request related events')
+      default:
+        throw new Error(`Invalid non-pull-request event strategy: ${nonPullRequestEventStrategy}`)
     }
   }
   return false
@@ -70,7 +73,7 @@ export async function run(): Promise<void> {
     core.info(`rawRule: ${JSON.stringify(rawRule)}`)
 
     async function check(value: any): Promise<boolean> {
-      const bypassChecker = new ByPassCheckerBuilder().use(LabelRule).build()
+      const bypassChecker = new ByPassCheckerBuilder().use(LabelRule).use(CommentRule).build()
       return bypassChecker.check(value, { githubToken, githubContext })
     }
 

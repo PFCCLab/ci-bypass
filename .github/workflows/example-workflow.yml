@@ -8,6 +8,9 @@ on:
     branches:
       - main
 
+env:
+  ACTIONS_RUNNER_DEBUG: true
+
 jobs:
   check-bypass:
     name: Check Bypass
@@ -32,10 +35,15 @@ jobs:
           type: 'composite'
           composite-rule: |
             {
-              "all": [
+              "any": [
                 {
                   "type": "labeled",
                   "label": ["ci-bypass: example", "ci-bypass: all"],
+                  "username": ["SigureMo"]
+                },
+                {
+                  "type": "commented",
+                  "comment-pattern": [".+/bypass example.+", ".+/bypass all.+"],
                   "username": ["SigureMo"]
                 }
               ]
