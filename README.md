@@ -81,26 +81,26 @@ jobs:
            with:
               github-token: ${{ secrets.GITHUB_TOKEN }}
               non-pull-request-event-strategy: 'always-skipped'
-               type: 'composite'
-               composite-rule: |
-                  {
-                     "any": [
-                        {
-                           "type": "labeled",
-                           "label": ["ci-bypass: example", "ci-bypass: all"],
-                           "username": ["SigureMo"]
-                        },
-                        {
-                           "type": "commented",
-                           "comment-pattern": [".+/bypass example.+", ".+/bypass all.+"],
-                           "username": ["SigureMo"]
-                        },
-                        {
-                           "type": "approved",
-                           "username": ["SigureMo", "gouzil"]
-                        }
-                     ]
-                  }
+              type: 'composite'
+              composite-rule: |
+                 {
+                    "any": [
+                       {
+                          "type": "labeled",
+                          "label": ["ci-bypass: example", "ci-bypass: all"],
+                          "username": ["SigureMo"]
+                       },
+                       {
+                          "type": "commented",
+                          "comment-pattern": [".+/bypass example.+", ".+/bypass all.+"],
+                          "username": ["SigureMo"]
+                       },
+                       {
+                          "type": "approved",
+                          "username": ["SigureMo", "gouzil"]
+                       }
+                    ]
+                 }
          - name: Run build
            if: ${{ steps.check-bypass.outputs.can-skip != 'true' }}
            run: echo "Run build"
