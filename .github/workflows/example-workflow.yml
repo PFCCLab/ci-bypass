@@ -32,10 +32,15 @@ jobs:
           type: 'composite'
           composite-rule: |
             {
-              "all": [
+              "any": [
                 {
                   "type": "labeled",
                   "label": ["ci-bypass: example", "ci-bypass: all"],
+                  "username": ["SigureMo"]
+                },
+                {
+                  "type": "commented",
+                  "comment-pattern": [".+/bypass example.+", ".+/bypass all.+"],
                   "username": ["SigureMo"]
                 }
               ]
