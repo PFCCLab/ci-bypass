@@ -79,7 +79,11 @@ export async function run(): Promise<void> {
     core.info(`rawRule: ${JSON.stringify(rawRule)}`)
 
     async function check(value: any): Promise<boolean> {
-      const bypassChecker = new ByPassCheckerBuilder().use(LabelRule).use(CommentRule).build()
+      const bypassChecker = new ByPassCheckerBuilder()
+        .use(LabelRule)
+        .use(CommentRule)
+        .use(ApproveRule)
+        .build()
       return bypassChecker.check(value, { githubToken, githubContext })
     }
 
