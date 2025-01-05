@@ -1,7 +1,7 @@
 import * as core from '@actions/core'
 import { context as githubContext } from '@actions/github'
 import { resolveCompositeAsync } from './composite.js'
-import { ByPassCheckerBuilder, LabelRule, CommentRule } from './rules/index.js'
+import { ByPassCheckerBuilder, LabelRule, CommentRule, ApproveRule } from './rules/index.js'
 
 const PULL_REQUEST_EVENTS = [
   'pull_request',
@@ -28,6 +28,12 @@ function parseRuleRawObjectFromInput(): any {
       return {
         type: CommentRule.type,
         'message-pattern': parseArrayInput(core.getInput('message-pattern'), '|'),
+        username: parseArrayInput(core.getInput('username'), '|'),
+        'user-team': parseArrayInput(core.getInput('user-team'), '|'),
+      }
+    case ApproveRule.type:
+      return {
+        type: ApproveRule.type,
         username: parseArrayInput(core.getInput('username'), '|'),
         'user-team': parseArrayInput(core.getInput('user-team'), '|'),
       }
