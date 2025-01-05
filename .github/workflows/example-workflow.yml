@@ -8,6 +8,9 @@ on:
     branches:
       - main
 
+env:
+  ACTIONS_RUNNER_DEBUG: true
+
 jobs:
   check-bypass:
     name: Check Bypass
