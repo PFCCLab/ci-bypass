@@ -36,7 +36,7 @@ inputs:
   comment-pattern:
     description: 'Comment regex pattern, can be a string or an array of strings separated by |'
     required: false
-  # For commented rule
+  # For composite rule
   composite-rule:
     description: 'Use any, all or not to combine multiple rules, need to be a JSON string'
     required: false

@@ -39,12 +39,12 @@ export class CommentRule extends AbstractRule {
     const octokit = getOctokit(githubToken)
     const { owner, repo } = githubContext.repo
     const { number } = githubContext.issue
-    const allEventsResponse = await octokit.rest.issues.listComments({
+    const allCommentResponse = await octokit.rest.issues.listComments({
       owner,
       repo,
       issue_number: number,
     })
-    const allCommentWithActors = allEventsResponse.data
+    const allCommentWithActors = allCommentResponse.data
       .map((comment) => {
         if (!comment.user) {
           core.warning(`comment.user is undefined, comment: ${comment}`)
