@@ -19,22 +19,22 @@ inputs:
     default: 'always-failed'
   # Select the type of the rule
   type:
-    description: 'Type of the rule, can be labeled, commented, approved, or composite'
+    description: 'Type of the rule, can be `labeled`, `commented`, `approved`, or `composite`'
     required: true
   # Common options for all types
   username:
-    description: 'Username, can be a string or an array of strings separated by |'
+    description: 'Username, can be a string or an array of strings separated by `|`'
     required: false
   user-team:
-    description: 'User team, can be a string or an array of strings separated by |'
+    description: 'User team, can be a string or an array of strings separated by `|`'
     required: false
   # For labeled rule
   label:
-    description: 'Label name, can be a string or an array of strings separated by |'
+    description: 'Label name, can be a string or an array of strings separated by `|`'
     required: false
   # For commented rule
   comment-pattern:
-    description: 'Comment regex pattern, can be a string or an array of strings separated by |'
+    description: 'Comment regex pattern, can be a string or an array of strings separated by `|`'
     required: false
   # For composite rule
   composite-rule:
