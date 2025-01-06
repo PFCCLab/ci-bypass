@@ -2,12 +2,7 @@ import { getOctokit } from '@actions/github'
 import * as core from '@actions/core'
 import { AbstractRule } from './base.js'
 import { PullRequestContext } from '../context.js'
-import {
-  resolveMaybeOneOrMoreOption,
-  resolveOneOrMoreOption,
-  isValidUserByName,
-  isValidUserByTeam,
-} from './utils.js'
+import { resolveMaybeOneOrMoreOption, isValidUser } from './utils.js'
 
 interface ReviewWithActor {
   state: string
@@ -55,8 +50,13 @@ export class ApproveRule extends AbstractRule {
       }
       return (
         review.state === 'APPROVED' &&
-        ((await isValidUserByName(currentReviewUserName, this.userNames)) ||
-          (await isValidUserByTeam(githubContext, octokit, currentReviewUserName, this.userTeams)))
+        (await isValidUser(
+          githubContext,
+          octokit,
+          currentReviewUserName,
+          this.userNames,
+          this.userTeams
+        ))
       )
     }
     for (const review of allReviewWithActors.reverse()) {

@@ -2,12 +2,7 @@ import { getOctokit } from '@actions/github'
 import * as core from '@actions/core'
 import { AbstractRule } from './base.js'
 import { PullRequestContext } from '../context.js'
-import {
-  resolveMaybeOneOrMoreOption,
-  resolveOneOrMoreOption,
-  isValidUserByName,
-  isValidUserByTeam,
-} from './utils.js'
+import { resolveMaybeOneOrMoreOption, resolveOneOrMoreOption, isValidUser } from './utils.js'
 
 export class LabelRule extends AbstractRule {
   public static type: string = 'labeled'
@@ -50,9 +45,12 @@ export class LabelRule extends AbstractRule {
       for (const labeledEvent of labeledEvents.reverse()) {
         if ('label' in labeledEvent && labeledEvent.label.name === label) {
           const currentEventUserName = labeledEvent.actor.login
-          return (
-            (await isValidUserByName(currentEventUserName, this.userNames)) ||
-            (await isValidUserByTeam(githubContext, octokit, currentEventUserName, this.userTeams))
+          return await isValidUser(
+            githubContext,
+            octokit,
+            currentEventUserName,
+            this.userNames,
+            this.userTeams
           )
         }
       }
