@@ -1,5 +1,7 @@
 # CI Bypass
 
+> Just a test PR
+
 Bypass CI checks for GitHub Actions.
 
 This action allows some users have no maintainers permissions to bypass CI checks. It is useful for CI/CD team to bypass CI checks on some special cases.
