@@ -2,12 +2,7 @@ import { getOctokit } from '@actions/github'
 import * as core from '@actions/core'
 import { AbstractRule } from './base.js'
 import { PullRequestContext } from '../context.js'
-import {
-  resolveMaybeOneOrMoreOption,
-  resolveOneOrMoreOption,
-  isValidUserByName,
-  isValidUserByTeam,
-} from './utils.js'
+import { resolveMaybeOneOrMoreOption, resolveOneOrMoreOption, isValidUser } from './utils.js'
 
 interface CommentWithActor {
   content: string
@@ -60,9 +55,12 @@ export class CommentRule extends AbstractRule {
       .filter((comment) => this.messagePatterns.some((pattern) => pattern.test(comment.content)))
     const IsValidComment = async (comment: CommentWithActor): Promise<Boolean> => {
       const currentCommentUserName = comment.actor
-      return (
-        (await isValidUserByName(currentCommentUserName, this.userNames)) ||
-        (await isValidUserByTeam(githubContext, octokit, currentCommentUserName, this.userTeams))
+      return await isValidUser(
+        githubContext,
+        octokit,
+        currentCommentUserName,
+        this.userNames,
+        this.userTeams
       )
     }
     core.debug(`allCommentWithActors: ${JSON.stringify(allCommentWithActors)}`)

@@ -9,15 +9,14 @@ export function resolveMaybeOneOrMoreOption<T>(value: T | T[] | undefined): T[] 
   return value ? resolveOneOrMoreOption(value) : []
 }
 
-export async function isValidUserByName(
+async function isValidUserByName(
   currentEventUserName: string,
   allowUserNames: string[]
 ): Promise<boolean> {
-  if (allowUserNames.length === 0) {
-    return true
-  }
   const result = allowUserNames.includes(currentEventUserName)
-  if (!result) {
+  if (result) {
+    core.info(`User ${currentEventUserName} has enough permission to bypass the action`)
+  } else {
     core.info(
       `User ${currentEventUserName} has not enough permission to bypass the action (not in ${allowUserNames})`
     )
@@ -25,16 +24,13 @@ export async function isValidUserByName(
   return result
 }
 
-export async function isValidUserByTeam(
+async function isValidUserByTeam(
   context: typeof githubContext,
   octokit: ReturnType<typeof getOctokit>,
   currentEventUserName: string,
   allowUserTeams: string[]
 ): Promise<boolean> {
   const owner = context.repo.owner
-  if (allowUserTeams.length === 0) {
-    return true
-  }
   return await Promise.all(
     allowUserTeams.map(async (team) => {
       try {
@@ -52,11 +48,30 @@ export async function isValidUserByTeam(
     })
   ).then((results) => {
     const result = results.some((members) => members.includes(currentEventUserName))
-    if (!result) {
+    if (result) {
+      core.info(`User ${currentEventUserName} has enough permission to bypass the action`)
+    } else {
       core.info(
         `User ${currentEventUserName} has not enough permission to bypass the action (not in ${allowUserTeams})`
       )
     }
     return result
   })
+}
+
+export async function isValidUser(
+  context: typeof githubContext,
+  octokit: ReturnType<typeof getOctokit>,
+  currentEventUserName: string,
+  allowUserNames: string[],
+  allowUserTeams: string[]
+) {
+  if (allowUserNames.length === 0 && allowUserTeams.length === 0) {
+    core.info('No user or team need to check, bypass the action')
+    return true
+  }
+  return (
+    (await isValidUserByName(currentEventUserName, allowUserNames)) ||
+    (await isValidUserByTeam(context, octokit, currentEventUserName, allowUserTeams))
+  )
 }
