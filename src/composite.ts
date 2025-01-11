@@ -28,7 +28,7 @@ function isNotComposite<T>(composite: Composite<T>): composite is NotComposite<T
   return (composite as NotComposite<T>).not !== undefined
 }
 
-function resolveAnyCompositeHighterOrder<T>(
+function resolveAnyComposite<T>(
   predicate: (value: T) => boolean
 ): (composite: AnyComposite<T>) => boolean {
   return (composite: AnyComposite<T>) => composite.any.some(predicate)
@@ -54,7 +54,7 @@ export function resolveComposite<T>(
   }
   return (composite: Composite<T>) => {
     if (isAnyComposite(composite)) {
-      return resolveAnyCompositeHighterOrder(predicateForComposite)(composite)
+      return resolveAnyComposite(predicateForComposite)(composite)
     } else if (isAllComposite(composite)) {
       return resolveAllComposite(predicateForComposite)(composite)
     } else if (isNotComposite(composite)) {

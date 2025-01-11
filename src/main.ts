@@ -27,7 +27,7 @@ function parseRuleRawObjectFromInput(): any {
     case CommentRule.type:
       return {
         type: CommentRule.type,
-        'message-pattern': parseArrayInput(core.getInput('message-pattern'), '|'),
+        'comment-pattern': parseArrayInput(core.getInput('comment-pattern'), '|'),
         username: parseArrayInput(core.getInput('username'), '|'),
         'user-team': parseArrayInput(core.getInput('user-team'), '|'),
       }
@@ -73,10 +73,13 @@ function checkNonPullRequestEvent() {
  */
 export async function run(): Promise<void> {
   try {
-    if (checkNonPullRequestEvent()) return
+    if (checkNonPullRequestEvent()) {
+      core.info('Non-pull-request event, skipping the check')
+      return
+    }
     const githubToken: string = core.getInput('github-token')
     const rawRule = parseRuleRawObjectFromInput()
-    core.info(`rawRule: ${JSON.stringify(rawRule)}`)
+    core.debug(`rawRule: ${JSON.stringify(rawRule)}`)
 
     async function check(value: any): Promise<boolean> {
       const bypassChecker = new ByPassCheckerBuilder()
@@ -88,7 +91,7 @@ export async function run(): Promise<void> {
     }
 
     const result = await resolveCompositeAsync(check)(rawRule)
-    core.info(`check result: ${result}`)
+    core.info(`Setting can-skip output to ${result}`)
     // Set outputs for other workflow steps to use
     core.setOutput('can-skip', result)
   } catch (error) {
