@@ -52,11 +52,7 @@ export class CommentRule extends AbstractRule {
         return { content: comment.body, actor: comment.user.login }
       })
       .filter((comment): comment is CommentWithActor => comment !== undefined)
-      .filter((comment) => {
-        core.debug(`comment: ${JSON.stringify(comment)}`)
-        core.debug(`pattern: ${JSON.stringify(this.commentPatterns)}`)
-        return this.commentPatterns.some((pattern) => pattern.test(comment.content))
-      })
+      .filter((comment) => this.commentPatterns.some((pattern) => pattern.test(comment.content)))
     const IsValidComment = async (comment: CommentWithActor): Promise<Boolean> => {
       const currentCommentUserName = comment.actor
       return await isValidUser(
