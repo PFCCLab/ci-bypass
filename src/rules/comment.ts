@@ -15,16 +15,16 @@ function compilePattern(pattern: string): RegExp {
 
 export class CommentRule extends AbstractRule {
   public static type: string = 'commented'
-  public messagePatterns: RegExp[]
+  public commentPatterns: RegExp[]
   public userNames: string[]
   public userTeams: string[]
   constructor(
-    messagePattern: string | string[],
+    commentPattern: string | string[],
     userName: string | string[] | undefined,
     userTeam: string | string[] | undefined
   ) {
     super()
-    this.messagePatterns = resolveOneOrMoreOption(messagePattern).map(compilePattern)
+    this.commentPatterns = resolveOneOrMoreOption(commentPattern).map(compilePattern)
     this.userNames = resolveMaybeOneOrMoreOption(userName)
     this.userTeams = resolveMaybeOneOrMoreOption(userTeam)
   }
@@ -54,8 +54,8 @@ export class CommentRule extends AbstractRule {
       .filter((comment): comment is CommentWithActor => comment !== undefined)
       .filter((comment) => {
         core.debug(`comment: ${JSON.stringify(comment)}`)
-        core.debug(`pattern: ${JSON.stringify(this.messagePatterns)}`)
-        return this.messagePatterns.some((pattern) => pattern.test(comment.content))
+        core.debug(`pattern: ${JSON.stringify(this.commentPatterns)}`)
+        return this.commentPatterns.some((pattern) => pattern.test(comment.content))
       })
     const IsValidComment = async (comment: CommentWithActor): Promise<Boolean> => {
       const currentCommentUserName = comment.actor
@@ -68,13 +68,13 @@ export class CommentRule extends AbstractRule {
       )
     }
     core.debug(`allCommentWithActors: ${JSON.stringify(allCommentWithActors)}`)
-    core.debug(`messagePatterns: ${JSON.stringify(this.messagePatterns)}`)
+    core.debug(`messagePatterns: ${JSON.stringify(this.commentPatterns)}`)
     return await Promise.all(allCommentWithActors.map(IsValidComment)).then((results) =>
       results.some((result) => result)
     )
   }
 
   public static fromObject(obj: any): CommentRule {
-    return new CommentRule(obj['message-pattern'], obj['username'], obj['user-team'])
+    return new CommentRule(obj['comment-pattern'], obj['username'], obj['user-team'])
   }
 }

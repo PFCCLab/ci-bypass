@@ -27,7 +27,7 @@ function parseRuleRawObjectFromInput(): any {
     case CommentRule.type:
       return {
         type: CommentRule.type,
-        'message-pattern': parseArrayInput(core.getInput('message-pattern'), '|'),
+        'comment-pattern': parseArrayInput(core.getInput('comment-pattern'), '|'),
         username: parseArrayInput(core.getInput('username'), '|'),
         'user-team': parseArrayInput(core.getInput('user-team'), '|'),
       }
