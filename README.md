@@ -92,7 +92,7 @@ jobs:
                        },
                        {
                           "type": "commented",
-                          "comment-pattern": [".+/bypass example.+", ".+/bypass all.+"],
+                          "comment-pattern": [".*/bypass example.*", ".*/bypass all.*"],
                           "username": ["SigureMo"]
                        },
                        {
