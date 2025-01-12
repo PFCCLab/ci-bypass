@@ -10,7 +10,7 @@ interface NotComposite<T> {
   not: T
 }
 
-type Composite<T> =
+export type Composite<T> =
   | T
   | AnyComposite<T | Composite<T>>
   | AllComposite<T | Composite<T>>
@@ -65,13 +65,6 @@ export function resolveComposite<T>(
   }
 }
 
-export function isCompositeTrue<T>(
-  composite: Composite<T>,
-  predicate: (value: T) => boolean
-): boolean {
-  return resolveComposite(predicate)(composite)
-}
-
 function resolveCompositeAnyAsync<T>(
   predicate: (value: T) => Promise<boolean>
 ): (composite: AnyComposite<T>) => Promise<boolean> {
@@ -113,11 +106,4 @@ export function resolveCompositeAsync<T>(
       return await predicate(composite as T)
     }
   }
-}
-
-export async function isCompositeTrueAsync<T>(
-  composite: Composite<T>,
-  predicate: (value: T) => Promise<boolean>
-): Promise<boolean> {
-  return resolveCompositeAsync(predicate)(composite)
 }

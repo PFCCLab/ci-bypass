@@ -1,7 +1,11 @@
 import { describe, it, assert } from 'vitest'
-import { isCompositeTrue, isCompositeTrueAsync } from '../src/composite.js'
+import { type Composite, resolveComposite, resolveCompositeAsync } from '../src/composite.js'
 
 describe.concurrent('Test Composite', () => {
+  function isCompositeTrue<T>(composite: Composite<T>, predicate: (value: T) => boolean): boolean {
+    return resolveComposite(predicate)(composite)
+  }
+
   function booleanIdentityWithTypeCheck(value: any): boolean {
     assert(typeof value === 'boolean')
     return value
@@ -82,6 +86,13 @@ describe.concurrent('Test Composite', () => {
 })
 
 describe.concurrent('Test Composite with async', () => {
+  async function isCompositeTrueAsync<T>(
+    composite: Composite<T>,
+    predicate: (value: T) => Promise<boolean>
+  ): Promise<boolean> {
+    return resolveCompositeAsync(predicate)(composite)
+  }
+
   async function asyncBooleanIdentityWithTypeCheck(value: any): Promise<boolean> {
     assert(typeof value === 'boolean')
     return value
