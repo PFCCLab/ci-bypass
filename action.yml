@@ -4,8 +4,8 @@ author: 'SigureMo'
 
 # Add your action's branding here. This will appear on the GitHub Marketplace.
 branding:
-  icon: 'heart'
-  color: 'red'
+  icon: 'skip-forward'
+  color: 'white'
 
 # Define your inputs here.
 inputs:
