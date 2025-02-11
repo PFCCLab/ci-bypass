@@ -1,11 +1,10 @@
-import { defineConfig, RolldownPlugin } from 'rolldown'
-import { minify } from 'rollup-plugin-esbuild'
+import { defineConfig } from 'rolldown'
 
 export default defineConfig({
   input: 'src/index.ts',
   output: {
     file: 'dist/index.js',
+    minify: true,
   },
   platform: 'node',
-  plugins: [minify() as RolldownPlugin],
 })
