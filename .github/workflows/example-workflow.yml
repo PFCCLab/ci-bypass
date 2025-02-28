@@ -62,7 +62,7 @@ jobs:
     steps:
       - name: Action Not Skipped
         id: not-bypass
-        run: ｜
+        run: |
           echo "::error ::Action not skipped, needs.check-bypass.outputs.can-skip is ${{ needs.check-bypass.outputs.can-skip }}"
 
   test-action-bypass:
