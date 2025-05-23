@@ -67,23 +67,42 @@ function checkNonPullRequestEvent() {
   return false
 }
 
-function retryNTimes<T>(fn: () => Promise<T>, n: number): Promise<T> {
-  return new Promise((resolve, reject) => {
-    const attempt = (count: number) => {
-      fn()
-        .then(resolve)
-        .catch((error) => {
-          if (count < n) {
-            core.warning(`Attempt ${count + 1} failed: ${error.message}. Retrying...`)
-            // Wait for 2**count second before retrying
-            setTimeout(() => attempt(count + 1), 1000 * 2 ** count)
-          } else {
-            reject(new Error(`All ${n} attempts failed`))
-          }
-        })
+// function retryNTimes<T>(fn: () => Promise<T>, n: number): Promise<T> {
+//   return new Promise((resolve, reject) => {
+//     const attempt = (count: number) => {
+//       fn()
+//         .then(resolve)
+//         .catch((error) => {
+//           if (count < n) {
+//             core.warning(`Attempt ${count + 1} failed: ${error.message}. Retrying...`)
+//             // Wait for 2**count second before retrying
+//             setTimeout(() => attempt(count + 1), 1000 * 2 ** count)
+//           } else {
+//             reject(new Error(`All ${n} attempts failed`))
+//           }
+//         })
+//     }
+//     attempt(0)
+//   })
+// }
+
+function retryNTimes<T extends (...args: any[]) => Promise<any>>(fn: T, n: number) {
+  return async (...args: Parameters<T>): Promise<Awaited<ReturnType<T>>> => {
+    for (let i = 0; i < n; i++) {
+      try {
+        throw new Error('Simulated error')
+        return await fn(...args)
+      } catch (error) {
+        core.warning(
+          `Attempt ${i + 1} failed: ${error instanceof Error ? error.message : error}. Retrying...`
+        )
+        if (i < n - 1) {
+          await new Promise((res) => setTimeout(res, 1000 * 2 ** i))
+        }
+      }
     }
-    attempt(0)
-  })
+    throw new Error(`All ${n} attempts failed`)
+  }
 }
 
 /**
@@ -110,7 +129,7 @@ export async function run(): Promise<void> {
       return bypassChecker.check(value, { githubToken, githubContext })
     }
 
-    const result = await retryNTimes(() => resolveCompositeAsync(check)(rawRule), 3)
+    const result = await retryNTimes(resolveCompositeAsync(check), 3)(rawRule)
     core.info(`Setting can-skip output to ${result}`)
     // Set outputs for other workflow steps to use
     core.setOutput('can-skip', result)
