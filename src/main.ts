@@ -2,6 +2,7 @@ import * as core from '@actions/core'
 import { context as githubContext } from '@actions/github'
 import { resolveCompositeAsync } from './composite.js'
 import { ByPassCheckerBuilder, LabelRule, CommentRule, ApproveRule } from './rules/index.js'
+import { setTimeout as sleep } from 'timers/promises'
 
 const PULL_REQUEST_EVENTS = [
   'pull_request',
@@ -97,7 +98,7 @@ function retryNTimes<T extends (...args: any[]) => Promise<any>>(fn: T, n: numbe
           `Attempt ${i + 1} failed: ${error instanceof Error ? error.message : error}. Retrying...`
         )
         if (i < n - 1) {
-          await new Promise((res) => setTimeout(res, 1000 * 2 ** i))
+          await sleep(1000 * 2 ** i) // Wait for 2**i seconds before retrying
         }
       }
     }
@@ -129,7 +130,7 @@ export async function run(): Promise<void> {
       return bypassChecker.check(value, { githubToken, githubContext })
     }
 
-    const result = await retryNTimes(resolveCompositeAsync(check), 3)(rawRule)
+    const result = await retryNTimes(resolveCompositeAsync(check), 5)(rawRule)
     core.info(`Setting can-skip output to ${result}`)
     // Set outputs for other workflow steps to use
     core.setOutput('can-skip', result)
