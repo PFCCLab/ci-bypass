@@ -67,12 +67,32 @@ function checkNonPullRequestEvent() {
   return false
 }
 
+function retryNTimes<T>(fn: () => Promise<T>, n: number): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const attempt = (count: number) => {
+      fn()
+        .then(resolve)
+        .catch((error) => {
+          if (count < n) {
+            core.warning(`Attempt ${count + 1} failed: ${error.message}. Retrying...`)
+            // Wait for 2**count second before retrying
+            setTimeout(() => attempt(count + 1), 1000 * 2 ** count)
+          } else {
+            reject(new Error(`All ${n} attempts failed`))
+          }
+        })
+    }
+    attempt(0)
+  })
+}
+
 /**
  * The main function for the action.
  * @returns {Promise<void>} Resolves when the action is complete.
  */
 export async function run(): Promise<void> {
   try {
+    core.info('Starting the action...')
     if (checkNonPullRequestEvent()) {
       core.info('Non-pull-request event, skipping the check')
       return
@@ -90,7 +110,7 @@ export async function run(): Promise<void> {
       return bypassChecker.check(value, { githubToken, githubContext })
     }
 
-    const result = await resolveCompositeAsync(check)(rawRule)
+    const result = await retryNTimes(() => resolveCompositeAsync(check)(rawRule), 3)
     core.info(`Setting can-skip output to ${result}`)
     // Set outputs for other workflow steps to use
     core.setOutput('can-skip', result)
