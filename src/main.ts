@@ -2,6 +2,7 @@ import * as core from '@actions/core'
 import { context as githubContext } from '@actions/github'
 import { resolveCompositeAsync } from './composite.js'
 import { ByPassCheckerBuilder, LabelRule, CommentRule, ApproveRule } from './rules/index.js'
+import { retryNTimes } from './retry.js'
 
 const PULL_REQUEST_EVENTS = [
   'pull_request',
@@ -73,6 +74,7 @@ function checkNonPullRequestEvent() {
  */
 export async function run(): Promise<void> {
   try {
+    core.info('Starting the action...')
     if (checkNonPullRequestEvent()) {
       core.info('Non-pull-request event, skipping the check')
       return
@@ -90,7 +92,7 @@ export async function run(): Promise<void> {
       return bypassChecker.check(value, { githubToken, githubContext })
     }
 
-    const result = await resolveCompositeAsync(check)(rawRule)
+    const result = await retryNTimes(resolveCompositeAsync(check), 5)(rawRule)
     core.info(`Setting can-skip output to ${result}`)
     // Set outputs for other workflow steps to use
     core.setOutput('can-skip', result)
