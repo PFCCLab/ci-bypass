@@ -2,7 +2,7 @@ import * as core from '@actions/core'
 import { context as githubContext } from '@actions/github'
 import { resolveCompositeAsync } from './composite.js'
 import { ByPassCheckerBuilder, LabelRule, CommentRule, ApproveRule } from './rules/index.js'
-import { setTimeout as sleep } from 'timers/promises'
+import { retryNTimes } from './retry.js'
 
 const PULL_REQUEST_EVENTS = [
   'pull_request',
@@ -66,44 +66,6 @@ function checkNonPullRequestEvent() {
     }
   }
   return false
-}
-
-// function retryNTimes<T>(fn: () => Promise<T>, n: number): Promise<T> {
-//   return new Promise((resolve, reject) => {
-//     const attempt = (count: number) => {
-//       fn()
-//         .then(resolve)
-//         .catch((error) => {
-//           if (count < n) {
-//             core.warning(`Attempt ${count + 1} failed: ${error.message}. Retrying...`)
-//             // Wait for 2**count second before retrying
-//             setTimeout(() => attempt(count + 1), 1000 * 2 ** count)
-//           } else {
-//             reject(new Error(`All ${n} attempts failed`))
-//           }
-//         })
-//     }
-//     attempt(0)
-//   })
-// }
-
-function retryNTimes<T extends (...args: any[]) => Promise<any>>(fn: T, n: number) {
-  return async (...args: Parameters<T>): Promise<Awaited<ReturnType<T>>> => {
-    for (let i = 0; i < n; i++) {
-      try {
-        throw new Error('Simulated error')
-        return await fn(...args)
-      } catch (error) {
-        core.warning(
-          `Attempt ${i + 1} failed: ${error instanceof Error ? error.message : error}. Retrying...`
-        )
-        if (i < n - 1) {
-          await sleep(1000 * 2 ** i) // Wait for 2**i seconds before retrying
-        }
-      }
-    }
-    throw new Error(`All ${n} attempts failed`)
-  }
 }
 
 /**
