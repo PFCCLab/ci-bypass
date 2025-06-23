@@ -24,18 +24,16 @@ export class ApproveRule extends AbstractRule {
     const octokit = getOctokit(githubToken)
     const { owner, repo } = githubContext.repo
     const { number } = githubContext.issue
-    const allReviewResponse = (
-      await withAllPages(
-        octokit,
-        octokit.rest.pulls.listReviews
-      )({
-        owner,
-        repo,
-        pull_number: number,
-      })
-    )
-      .map((rawData) => rawData.data)
-      .flat()
+    const allReviewResponse = await withAllPages(
+      octokit,
+      octokit.rest.pulls.listReviews
+    )({
+      owner,
+      repo,
+      pull_number: number,
+    })
+    // .map((rawData) => rawData.data)
+    // .flat()
     const allReviewWithActors = allReviewResponse
       .map((review) => {
         if (!review.user) {

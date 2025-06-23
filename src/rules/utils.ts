@@ -83,9 +83,13 @@ export async function isValidUser(
   )
 }
 
+interface Response<T> {
+  data: T[]
+}
+
 export function withAllPages<T, U>(
   octokit: ReturnType<typeof getOctokit>,
-  method: (params: T) => Promise<U>
+  method: (params: T) => Promise<Response<U>>
 ): (params: T) => Promise<U[]> {
   return async (params: T): Promise<U[]> => {
     const allData: U[] = []
@@ -93,7 +97,7 @@ export function withAllPages<T, U>(
       ...params,
       per_page: 100,
     })) {
-      allData.push(response.data)
+      allData.push(...response.data)
     }
 
     return allData
