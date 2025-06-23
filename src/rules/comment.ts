@@ -39,11 +39,6 @@ export class CommentRule extends AbstractRule {
     const octokit = getOctokit(githubToken)
     const { owner, repo } = githubContext.repo
     const { number } = githubContext.issue
-    const allCommentResponseOld = await octokit.rest.issues.listComments({
-      owner,
-      repo,
-      issue_number: number,
-    })
     const allCommentResponse = await withAllPages(
       octokit,
       octokit.rest.issues.listComments
