@@ -2,7 +2,12 @@ import { getOctokit } from '@actions/github'
 import * as core from '@actions/core'
 import { AbstractRule } from './base.js'
 import { PullRequestContext } from '../context.js'
-import { resolveMaybeOneOrMoreOption, resolveOneOrMoreOption, isValidUser } from './utils.js'
+import {
+  resolveMaybeOneOrMoreOption,
+  resolveOneOrMoreOption,
+  isValidUser,
+  withAllPages,
+} from './utils.js'
 
 interface CommentWithActor {
   content: string
@@ -34,12 +39,19 @@ export class CommentRule extends AbstractRule {
     const octokit = getOctokit(githubToken)
     const { owner, repo } = githubContext.repo
     const { number } = githubContext.issue
-    const allCommentResponse = await octokit.rest.issues.listComments({
-      owner,
-      repo,
-      issue_number: number,
-    })
-    const allCommentWithActors = allCommentResponse.data
+    const allCommentResponse = (
+      await withAllPages(
+        octokit,
+        octokit.rest.issues.listComments
+      )({
+        owner,
+        repo,
+        issue_number: number,
+      })
+    )
+      .map((rawData) => rawData.data)
+      .flat()
+    const allCommentWithActors = allCommentResponse
       .map((comment) => {
         if (!comment.user) {
           core.warning(`comment.user is undefined, comment: ${comment}`)

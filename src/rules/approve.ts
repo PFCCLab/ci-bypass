@@ -2,7 +2,7 @@ import { getOctokit } from '@actions/github'
 import * as core from '@actions/core'
 import { AbstractRule } from './base.js'
 import { PullRequestContext } from '../context.js'
-import { resolveMaybeOneOrMoreOption, isValidUser } from './utils.js'
+import { resolveMaybeOneOrMoreOption, isValidUser, withAllPages } from './utils.js'
 
 interface ReviewWithActor {
   state: string
@@ -24,12 +24,19 @@ export class ApproveRule extends AbstractRule {
     const octokit = getOctokit(githubToken)
     const { owner, repo } = githubContext.repo
     const { number } = githubContext.issue
-    const allReviewResponse = await octokit.rest.pulls.listReviews({
-      owner,
-      repo,
-      pull_number: number,
-    })
-    const allReviewWithActors = allReviewResponse.data
+    const allReviewResponse = (
+      await withAllPages(
+        octokit,
+        octokit.rest.pulls.listReviews
+      )({
+        owner,
+        repo,
+        pull_number: number,
+      })
+    )
+      .map((rawData) => rawData.data)
+      .flat()
+    const allReviewWithActors = allReviewResponse
       .map((review) => {
         if (!review.user) {
           core.warning(`review.user is undefined, review: ${review}`)

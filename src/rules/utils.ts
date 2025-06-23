@@ -34,10 +34,17 @@ async function isValidUserByTeam(
   return await Promise.all(
     allowUserTeams.map(async (team) => {
       try {
-        const { data: teamMembers } = await octokit.rest.teams.listMembersInOrg({
-          org: owner,
-          team_slug: team,
-        })
+        const teamMembers = (
+          await withAllPages(
+            octokit,
+            octokit.rest.teams.listMembersInOrg
+          )({
+            org: owner,
+            team_slug: team,
+          })
+        )
+          .map((rawData) => rawData.data)
+          .flat()
         return teamMembers.map((member) => member.login)
       } catch (error) {
         core.error(
@@ -74,4 +81,21 @@ export async function isValidUser(
     (await isValidUserByName(currentEventUserName, allowUserNames)) ||
     (await isValidUserByTeam(context, octokit, currentEventUserName, allowUserTeams))
   )
+}
+
+export function withAllPages<T, U>(
+  octokit: ReturnType<typeof getOctokit>,
+  method: (params: T) => Promise<U>
+): (params: T) => Promise<U[]> {
+  return async (params: T): Promise<U[]> => {
+    const allData: U[] = []
+    for await (const response of octokit.paginate.iterator(method as any, {
+      ...params,
+      per_page: 100,
+    })) {
+      allData.push(response.data)
+    }
+
+    return allData
+  }
 }
