@@ -45,18 +45,15 @@ export class CommentRule extends AbstractRule {
       issue_number: number,
     })
     console.log(`xxx ${JSON.stringify(allCommentResponseOld)}`)
-    const allCommentResponse = (
-      await withAllPages(
-        octokit,
-        octokit.rest.issues.listComments
-      )({
-        owner,
-        repo,
-        issue_number: number,
-      })
-    )
-      .map((rawData) => rawData.data)
-      .flat()
+    const allCommentResponseRaw = await withAllPages(
+      octokit,
+      octokit.rest.issues.listComments
+    )({
+      owner,
+      repo,
+      issue_number: number,
+    })
+    const allCommentResponse = allCommentResponseRaw.map((rawData) => rawData.data).flat()
     console.log(`allCommentResponse: ${JSON.stringify(allCommentResponse)}`)
     const allCommentWithActors = allCommentResponse
       .map((comment) => {
