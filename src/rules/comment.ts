@@ -54,9 +54,9 @@ export class CommentRule extends AbstractRule {
       issue_number: number,
     })
     console.log(`allCommentResponseRaw: ${JSON.stringify(allCommentResponseRaw)}`)
-    const allCommentResponse = allCommentResponseRaw.map((rawData) => rawData.data).flat()
+    // const allCommentResponse = allCommentResponseRaw.map((rawData) => rawData.data).flat()
     console.log(`allCommentResponse: ${JSON.stringify(allCommentResponse)}`)
-    const allCommentWithActors = allCommentResponse
+    const allCommentWithActors = allCommentResponseRaw
       .map((comment) => {
         if (!comment.user) {
           core.warning(`comment.user is undefined, comment: ${comment}`)
