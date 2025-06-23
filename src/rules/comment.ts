@@ -44,8 +44,7 @@ export class CommentRule extends AbstractRule {
       repo,
       issue_number: number,
     })
-    console.log(`xxx ${JSON.stringify(allCommentResponseOld)}`)
-    const allCommentResponseRaw = await withAllPages(
+    const allCommentResponse = await withAllPages(
       octokit,
       octokit.rest.issues.listComments
     )({
@@ -53,10 +52,7 @@ export class CommentRule extends AbstractRule {
       repo,
       issue_number: number,
     })
-    console.log(`allCommentResponseRaw: ${JSON.stringify(allCommentResponseRaw)}`)
-    // const allCommentResponse = allCommentResponseRaw.map((rawData) => rawData.data).flat()
-    // console.log(`allCommentResponse: ${JSON.stringify(allCommentResponse)}`)
-    const allCommentWithActors = allCommentResponseRaw
+    const allCommentWithActors = allCommentResponse
       .map((comment) => {
         if (!comment.user) {
           core.warning(`comment.user is undefined, comment: ${comment}`)

@@ -32,8 +32,6 @@ export class ApproveRule extends AbstractRule {
       repo,
       pull_number: number,
     })
-    // .map((rawData) => rawData.data)
-    // .flat()
     const allReviewWithActors = allReviewResponse
       .map((review) => {
         if (!review.user) {

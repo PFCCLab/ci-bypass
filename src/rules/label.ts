@@ -30,30 +30,22 @@ export class LabelRule extends AbstractRule {
     const octokit = getOctokit(githubToken)
     const { owner, repo } = githubContext.repo
     const { number } = githubContext.issue
-    const allEventsResponse = (
-      await withAllPages(
-        octokit,
-        octokit.rest.issues.listEvents
-      )({
-        owner,
-        repo,
-        issue_number: number,
-      })
-    )
-      .map((rawData) => rawData.data)
-      .flat()
-    const allLabelsResponse = (
-      await withAllPages(
-        octokit,
-        octokit.rest.issues.listLabelsOnIssue
-      )({
-        owner,
-        repo,
-        issue_number: number,
-      })
-    )
-      .map((rawData) => rawData.data)
-      .flat()
+    const allEventsResponse = await withAllPages(
+      octokit,
+      octokit.rest.issues.listEvents
+    )({
+      owner,
+      repo,
+      issue_number: number,
+    })
+    const allLabelsResponse = await withAllPages(
+      octokit,
+      octokit.rest.issues.listLabelsOnIssue
+    )({
+      owner,
+      repo,
+      issue_number: number,
+    })
     const currentLabels = allLabelsResponse
       .map((label) => label.name)
       .filter((label) => this.labels.includes(label))

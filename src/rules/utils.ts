@@ -34,17 +34,13 @@ async function isValidUserByTeam(
   return await Promise.all(
     allowUserTeams.map(async (team) => {
       try {
-        const teamMembers = (
-          await withAllPages(
-            octokit,
-            octokit.rest.teams.listMembersInOrg
-          )({
-            org: owner,
-            team_slug: team,
-          })
-        )
-          .map((rawData) => rawData.data)
-          .flat()
+        const teamMembers = await withAllPages(
+          octokit,
+          octokit.rest.teams.listMembersInOrg
+        )({
+          org: owner,
+          team_slug: team,
+        })
         return teamMembers.map((member) => member.login)
       } catch (error) {
         core.error(
