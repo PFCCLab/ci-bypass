@@ -55,7 +55,7 @@ export class CommentRule extends AbstractRule {
     })
     console.log(`allCommentResponseRaw: ${JSON.stringify(allCommentResponseRaw)}`)
     // const allCommentResponse = allCommentResponseRaw.map((rawData) => rawData.data).flat()
-    console.log(`allCommentResponse: ${JSON.stringify(allCommentResponse)}`)
+    // console.log(`allCommentResponse: ${JSON.stringify(allCommentResponse)}`)
     const allCommentWithActors = allCommentResponseRaw
       .map((comment) => {
         if (!comment.user) {
