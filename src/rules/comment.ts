@@ -53,6 +53,7 @@ export class CommentRule extends AbstractRule {
       repo,
       issue_number: number,
     })
+    console.log(`allCommentResponseRaw: ${JSON.stringify(allCommentResponseRaw)}`)
     const allCommentResponse = allCommentResponseRaw.map((rawData) => rawData.data).flat()
     console.log(`allCommentResponse: ${JSON.stringify(allCommentResponse)}`)
     const allCommentWithActors = allCommentResponse
