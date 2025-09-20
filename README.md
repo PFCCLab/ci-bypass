@@ -20,7 +20,7 @@ jobs:
       steps:
          - id: check-bypass
            name: Check Bypass
-           uses: PFCCLab/ci-bypass@v1
+           uses: PFCCLab/ci-bypass@v2
            with:
               github-token: ${{ secrets.GITHUB_TOKEN }}
               non-pull-request-event-strategy: 'always-skipped'
@@ -52,7 +52,7 @@ jobs:
       steps:
          - id: check-bypass
            name: Check Bypass
-           uses: PFCCLab/ci-bypass@v1
+           uses: PFCCLab/ci-bypass@v2
            with:
               github-token: ${{ secrets.GITHUB_TOKEN }}
               non-pull-request-event-strategy: 'always-skipped'
@@ -77,7 +77,7 @@ jobs:
       steps:
          - id: check-bypass
            name: Check Bypass
-           uses: PFCCLab/ci-bypass@v1
+           uses: PFCCLab/ci-bypass@v2
            with:
               github-token: ${{ secrets.GITHUB_TOKEN }}
               non-pull-request-event-strategy: 'always-skipped'
