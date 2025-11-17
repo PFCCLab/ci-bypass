@@ -65,7 +65,14 @@ export class LabelRule extends AbstractRule {
           )
         }
       }
-      core.error(`label ${label} not found in labeledEvents`)
+      const availableLabels = labeledEvents
+        .map((event) => ('label' in event ? event.label.name : null))
+        .filter((name): name is string => name !== null)
+      core.error(
+        `Label "${label}" not found in labeledEvents. Available labels in events: ${JSON.stringify(
+          availableLabels
+        )}`
+      )
       return false
     }
     core.debug(`labeledEvents: ${JSON.stringify(labeledEvents)}`)
