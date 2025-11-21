@@ -21,7 +21,7 @@ jobs:
       can-skip: ${{ steps.check-bypass.outputs.can-skip }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - id: check-bypass
         name: Check Bypass
