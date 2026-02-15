@@ -45,6 +45,8 @@ jobs:
       # expected.
       - name: Commit Updated dist/
         id: commit
+        env:
+          GH_TOKEN: ${{ secrets.UPDATE_DIST_TOKEN }}
         run: |
           if [ ! -d dist/ ]; then
             echo "Expected dist/ directory does not exist.  See status below:"
@@ -52,8 +54,8 @@ jobs:
             exit 1
           fi
           if [ "$(git diff --ignore-space-at-eol --text dist/ | wc -l)" -gt "0" ]; then
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git config user.name "ShigureNyako"
+            git config user.email "shigure_nyako@outlook.com"
             git add dist/
             git commit -m "🍱 chore: update transpiled JavaScript in dist/"
             git push
