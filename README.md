@@ -12,7 +12,7 @@ This action allows some users have no maintainers permissions to bypass CI check
 jobs:
    check-bypass:
       name: Check Bypass
-      runs-on: ubuntu-latest
+      runs-on: ubuntu-slim
       permissions:
          contents: read
       outputs:
