@@ -5,7 +5,7 @@
   "author": "Nyakku Shigure <sigure.qaq@gmail.com>",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@10.30.2",
+  "packageManager": "pnpm@10.32.1",
   "homepage": "https://github.com/PFCCLab/ci-bypass",
   "repository": {
     "type": "git",
@@ -44,7 +44,7 @@
     "@github/local-action": "^7.0.0",
     "@types/node": "^24.8.1",
     "prettier": "^3.5.3",
-    "rolldown": "1.0.0-rc.5",
+    "rolldown": "1.0.0-rc.10",
     "typescript": "^5.8.3",
     "vitest": "^4.0.0"
   }
