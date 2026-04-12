@@ -27,13 +27,14 @@
     "node": ">=21"
   },
   "scripts": {
-    "bundle": "pnpm run format:write && pnpm run package",
-    "format:write": "pnpm prettier --write .",
-    "format:check": "pnpm prettier --check .",
+    "bundle": "vp fmt . --write && vp pack",
+    "check": "vp check",
+    "format:write": "vp fmt . --write",
+    "format:check": "vp fmt --check",
     "run-local-action": "pnpm local-action . src/main.ts .env",
-    "package": "pnpm rolldown -c rolldown.config.ts",
-    "package:watch": "pnpm run package --watch",
-    "test": "pnpm vitest"
+    "package": "vp pack",
+    "package:watch": "vp pack --watch",
+    "test": "vp test"
   },
   "license": "MIT",
   "dependencies": {
@@ -43,9 +44,8 @@
   "devDependencies": {
     "@github/local-action": "^7.0.0",
     "@types/node": "^24.8.1",
-    "prettier": "^3.5.3",
-    "rolldown": "1.0.0-rc.15",
     "typescript": "^6.0.0",
-    "vitest": "^4.0.0"
+    "vite-plus": "^0.1.16",
+    "vitest": "^4.1.4"
   }
 }

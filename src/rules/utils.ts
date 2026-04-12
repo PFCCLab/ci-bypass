@@ -14,11 +14,12 @@ async function isValidUserByName(
   allowUserNames: string[]
 ): Promise<boolean> {
   const result = allowUserNames.includes(currentEventUserName)
+  const allowUserNamesText = allowUserNames.join(', ')
   if (result) {
     core.info(`User ${currentEventUserName} has enough permission to bypass the action`)
   } else {
     core.info(
-      `User ${currentEventUserName} has not enough permission to bypass the action (not in ${allowUserNames})`
+      `User ${currentEventUserName} has not enough permission to bypass the action (not in ${allowUserNamesText})`
     )
   }
   return result
@@ -51,11 +52,12 @@ async function isValidUserByTeam(
     })
   ).then((results) => {
     const result = results.some((members) => members.includes(currentEventUserName))
+    const allowUserTeamsText = allowUserTeams.join(', ')
     if (result) {
       core.info(`User ${currentEventUserName} has enough permission to bypass the action`)
     } else {
       core.info(
-        `User ${currentEventUserName} has not enough permission to bypass the action (not in ${allowUserTeams})`
+        `User ${currentEventUserName} has not enough permission to bypass the action (not in ${allowUserTeamsText})`
       )
     }
     return result

@@ -1,4 +1,4 @@
-name: Update Transpiled JavaScript
+name: Update Bundled JavaScript
 
 on:
   pull_request:
@@ -25,22 +25,19 @@ jobs:
           ref: ${{ github.head_ref }}
           token: ${{ secrets.UPDATE_DIST_TOKEN }}
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v6
-
-      - name: Setup Node.js
-        id: setup-node
-        uses: actions/setup-node@v6
+      - name: Setup Vite+
+        uses: voidzero-dev/setup-vp@v1
         with:
           node-version-file: .node-version
-          cache: pnpm
+          run-install: false
+          cache: true
 
       - name: Install dependencies
-        run: pnpm i --frozen-lockfile
+        run: vp install --frozen-lockfile
 
       - name: Build dist/ Directory
         id: build
-        run: pnpm run bundle
+        run: vp pack
 
       # This will commit the updated `dist/` directory if it is different than
       # expected.
@@ -58,7 +55,7 @@ jobs:
             git config user.name "ShigureNyako"
             git config user.email "shigure_nyako@outlook.com"
             git add dist/
-            git commit -m "🍱 chore: update transpiled JavaScript in dist/"
+            git commit -m "🍱 chore: update bundled JavaScript in dist/"
             git push
           else
             echo "No changes detected in dist/. No commit necessary."

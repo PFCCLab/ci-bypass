@@ -13,7 +13,7 @@ export abstract class AbstractRule implements Rule {
   static type: string
   abstract check(context: PullRequestContext): Promise<boolean>
 
-  static fromObject(obj: any): AbstractRule {
+  static fromObject(_obj: any): AbstractRule {
     throw new Error('fromObject method must be implemented')
   }
 }

@@ -1,13 +1,13 @@
 # In TypeScript actions, `dist/` is a special directory. When you reference
 # an action with the `uses:` property, `dist/index.js` is the code that will be
-# run. For this project, the `dist/index.js` file is transpiled from other
-# source files. This workflow ensures the `dist/` directory contains the
-# expected transpiled code.
+# run. For this project, the `dist/index.js` file is bundled from the source
+# files with Vite+. This workflow ensures the `dist/` directory contains the
+# expected bundled code.
 #
 # If this workflow is run from a feature branch, it will act as an additional CI
 # check and fail if the checked-in `dist/` directory does not match what is
 # expected from the build.
-name: Check Transpiled JavaScript
+name: Check Bundled JavaScript
 
 on:
   pull_request:
@@ -31,22 +31,19 @@ jobs:
         id: checkout
         uses: actions/checkout@v6
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v6
-
-      - name: Setup Node.js
-        id: setup-node
-        uses: actions/setup-node@v6
+      - name: Setup Vite+
+        uses: voidzero-dev/setup-vp@v1
         with:
           node-version-file: .node-version
-          cache: pnpm
+          run-install: false
+          cache: true
 
       - name: Install dependencies
-        run: pnpm i --frozen-lockfile
+        run: vp install --frozen-lockfile
 
       - name: Build dist/ Directory
         id: build
-        run: pnpm run bundle
+        run: vp pack
 
       # This will fail the workflow if the `dist/` directory is different than
       # expected.

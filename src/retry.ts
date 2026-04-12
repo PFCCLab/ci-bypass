@@ -7,9 +7,8 @@ export function retryNTimes<T extends (...args: any[]) => Promise<any>>(fn: T, n
       try {
         return await fn(...args)
       } catch (error) {
-        core.warning(
-          `Attempt ${i + 1} failed: ${error instanceof Error ? error.message : error}. Retrying...`
-        )
+        const errorMessage = error instanceof Error ? error.message : String(error)
+        core.warning(`Attempt ${i + 1} failed: ${errorMessage}. Retrying...`)
         if (i < n - 1) {
           await sleep(1000 * 2 ** i) // Wait for 2**i seconds before retrying
         }
