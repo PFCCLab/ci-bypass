@@ -49,19 +49,23 @@ export class CommentRule extends AbstractRule {
     })
     const allCommentWithActors = allCommentResponse
       .map((comment) => {
+        const commentSummary = JSON.stringify({
+          id: comment.id,
+          html_url: comment.html_url,
+        })
         if (!comment.user) {
-          core.warning(`comment.user is undefined, comment: ${comment}`)
+          core.warning(`comment.user is undefined, comment: ${commentSummary}`)
           return undefined
         }
         if (!comment.body) {
-          core.warning(`comment.body is undefined, comment: ${comment}`)
+          core.warning(`comment.body is undefined, comment: ${commentSummary}`)
           return undefined
         }
         return { content: comment.body, actor: comment.user.login }
       })
       .filter((comment): comment is CommentWithActor => comment !== undefined)
       .filter((comment) => this.commentPatterns.some((pattern) => pattern.test(comment.content)))
-    const IsValidComment = async (comment: CommentWithActor): Promise<Boolean> => {
+    const IsValidComment = async (comment: CommentWithActor): Promise<boolean> => {
       const currentCommentUserName = comment.actor
       return await isValidUser(
         githubContext,

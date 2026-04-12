@@ -1,4 +1,4 @@
-import { describe, it, assert } from 'vitest'
+import { describe, it, assert } from 'vite-plus/test'
 import { type Composite, resolveComposite, resolveCompositeAsync } from '../src/composite.js'
 
 describe.concurrent('Test Composite', () => {

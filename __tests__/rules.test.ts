@@ -1,4 +1,4 @@
-import { describe, it } from 'vitest'
+import { describe, it } from 'vite-plus/test'
 import { ByPassCheckerBuilder } from '../src/rules/index.js'
 import { AbstractRule } from '../src/rules/base.js'
 import { type PullRequestContext } from '../src/context.js'
@@ -9,10 +9,10 @@ describe.concurrent('Test Rules', () => {
     constructor() {
       super()
     }
-    public async check(context: any): Promise<boolean> {
+    public async check(_context: any): Promise<boolean> {
       return true
     }
-    public static fromObject(obj: any): TestRule {
+    public static fromObject(_obj: any): TestRule {
       return new TestRule()
     }
   }

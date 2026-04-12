@@ -34,15 +34,20 @@ export class ApproveRule extends AbstractRule {
     })
     const allReviewWithActors = allReviewResponse
       .map((review) => {
+        const reviewSummary = JSON.stringify({
+          id: review.id,
+          html_url: review.html_url,
+          state: review.state,
+        })
         if (!review.user) {
-          core.warning(`review.user is undefined, review: ${review}`)
+          core.warning(`review.user is undefined, review: ${reviewSummary}`)
           return undefined
         }
         return { state: review.state, actor: review.user.login }
       })
       .filter((review): review is ReviewWithActor => review !== undefined)
     let requestChangesReviewers = new Set<string>()
-    const IsValidReview = async (review: ReviewWithActor): Promise<Boolean> => {
+    const IsValidReview = async (review: ReviewWithActor): Promise<boolean> => {
       const currentReviewUserName = review.actor
       if (review.state === 'CHANGES_REQUESTED') {
         requestChangesReviewers.add(currentReviewUserName)
@@ -67,7 +72,7 @@ export class ApproveRule extends AbstractRule {
         return true
       }
     }
-    core.debug(`No valid review found, all reviews: ${allReviewWithActors}`)
+    core.debug(`No valid review found, all reviews: ${JSON.stringify(allReviewWithActors)}`)
     return false
   }
 

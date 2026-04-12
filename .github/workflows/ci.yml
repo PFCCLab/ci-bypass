@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   test-typescript:
-    name: TypeScript Tests
+    name: TypeScript Checks
     runs-on: ubuntu-latest
 
     steps:
@@ -22,23 +22,19 @@ jobs:
         id: checkout
         uses: actions/checkout@v6
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v6
-
-      - name: Setup Node.js
-        id: setup-node
-        uses: actions/setup-node@v6
+      - name: Setup Vite+
+        uses: voidzero-dev/setup-vp@v1
         with:
-          node-version-file: .node-version
-          cache: pnpm
+          node-version: '24'
+          cache: true
 
       - name: Install dependencies
-        run: pnpm i --frozen-lockfile
+        run: vp install --frozen-lockfile
 
-      - name: Check Format
-        id: pnpm-format-check
-        run: pnpm run format:check
+      - name: Run checks
+        id: vp-check
+        run: vp check
 
-      - name: Run Tests
-        id: pnpm-test
-        run: pnpm test
+      - name: Run tests
+        id: vp-test
+        run: vp test

@@ -52,7 +52,7 @@ export class LabelRule extends AbstractRule {
 
     const labeledEvents = allEventsResponse.filter((event) => event.event === 'labeled')
 
-    const isValidLabel = async (label: string): Promise<Boolean> => {
+    const isValidLabel = async (label: string): Promise<boolean> => {
       for (const labeledEvent of labeledEvents.reverse()) {
         if ('label' in labeledEvent && labeledEvent.label.name === label) {
           const currentEventUserName = labeledEvent.actor.login
