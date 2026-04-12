@@ -1,6 +1,9 @@
 name: Update Bundled JavaScript
 
 on:
+  pull_request:
+    branches:
+      - main
   push:
     branches:
       - main
@@ -19,7 +22,7 @@ jobs:
         id: checkout
         uses: actions/checkout@v6
         with:
-          ref: ${{ github.head_ref || github.ref_name }}
+          ref: ${{ github.head_ref }}
           token: ${{ secrets.UPDATE_DIST_TOKEN }}
 
       - name: Setup Vite+
