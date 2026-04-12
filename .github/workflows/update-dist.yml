@@ -23,7 +23,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           ref: ${{ github.head_ref }}
-          token: ${{ secrets.UPDATE_DIST_TOKEN }}
+          token: ${{ secrets.UPDATE_DIST_TOKEN || github.token }}
 
       - name: Setup Vite+
         uses: voidzero-dev/setup-vp@v1
@@ -43,7 +43,7 @@ jobs:
       - name: Commit Updated dist/
         id: commit
         env:
-          GH_TOKEN: ${{ secrets.UPDATE_DIST_TOKEN }}
+          GH_TOKEN: ${{ secrets.UPDATE_DIST_TOKEN || github.token }}
         run: |
           if [ ! -d dist/ ]; then
             echo "Expected dist/ directory does not exist.  See status below:"
