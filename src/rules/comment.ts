@@ -50,15 +50,11 @@ export class CommentRule extends AbstractRule {
     const allCommentWithActors = allCommentResponse
       .map((comment) => {
         if (!comment.user) {
-          core.warning(
-            `comment.user is undefined, comment id=${comment.id}, url=${comment.html_url}`
-          )
+          core.warning(`comment.user is undefined, comment: ${JSON.stringify(comment)}`)
           return undefined
         }
         if (!comment.body) {
-          core.warning(
-            `comment.body is undefined, comment id=${comment.id}, url=${comment.html_url}`
-          )
+          core.warning(`comment.body is undefined, comment: ${JSON.stringify(comment)}`)
           return undefined
         }
         return { content: comment.body, actor: comment.user.login }
