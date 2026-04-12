@@ -44,7 +44,7 @@
     "@github/local-action": "^7.0.0",
     "@types/node": "^24.8.1",
     "prettier": "^3.5.3",
-    "rolldown": "1.0.0-rc.12",
+    "rolldown": "1.0.0-rc.15",
     "typescript": "^6.0.0",
     "vitest": "^4.0.0"
   }
