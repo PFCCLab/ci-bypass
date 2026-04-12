@@ -108,16 +108,17 @@ jobs:
 
 ### All options
 
-| Name                              | Description                                                                                                                    | Required | Default         |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | -------- | --------------- |
-| `github-token`                    | GitHub token to access GitHub API                                                                                              | false    | `undefined`     |
-| `non-pull-request-event-strategy` | Strategy to apply to non-pull-request events, can be always-skipped, never-skipped, or always-failed, default is always-failed | true     | `always-failed` |
-| `type`                            | Type of the rule, can be `labeled`, `commented`, `approved`, or `composite`                                                    | true     | `labeled`       |
-| `username`                        | Username, can be a string or an array of strings separated by `\|`                                                             | false    | `undefined`     |
-| `user-team`                       | User team, can be a string or an array of strings separated by `\|`                                                            | false    | `undefined`     |
-| `label`                           | Label name, can be a string or an array of strings separated by `\|`                                                           | false    | `undefined`     |
-| `comment-pattern`                 | Comment regex pattern, can be a string or an array of strings separated by `\|`                                                | false    | `undefined`     |
-| `composite-rule`                  | Use any, all or not to combine multiple rules, need to be a JSON string                                                        | false    | `undefined`     |
+<!-- prettier-ignore -->
+| Name | Description | Required | Default |
+| - | - | - | - |
+| `github-token` | GitHub token to access GitHub API | false | `undefined` |
+| `non-pull-request-event-strategy` | Strategy to apply to non-pull-request events, can be always-skipped, never-skipped, or always-failed, default is always-failed | true | `always-failed` |
+| `type` | Type of the rule, can be `labeled`, `commented`, `approved`, or `composite` | true | `labeled` |
+| `username` | Username, can be a string or an array of strings separated by `\|` | false | `undefined` |
+| `user-team` | User team, can be a string or an array of strings separated by `\|` | false | `undefined` |
+| `label` | Label name, can be a string or an array of strings separated by `\|` | false | `undefined` |
+| `comment-pattern` | Comment regex pattern, can be a string or an array of strings separated by `\|` | false | `undefined` |
+| `composite-rule` | Use any, all or not to combine multiple rules, need to be a JSON string | false | `undefined` |
 
 > [!NOTE]
 >

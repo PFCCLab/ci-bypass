@@ -1,9 +1,6 @@
 name: Update Bundled JavaScript
 
 on:
-  pull_request:
-    branches:
-      - main
   push:
     branches:
       - main
@@ -22,13 +19,14 @@ jobs:
         id: checkout
         uses: actions/checkout@v6
         with:
-          ref: ${{ github.head_ref }}
-          token: ${{ secrets.UPDATE_DIST_TOKEN || github.token }}
+          ref: ${{ github.head_ref || github.ref_name }}
+          token: ${{ secrets.UPDATE_DIST_TOKEN }}
 
       - name: Setup Vite+
         uses: voidzero-dev/setup-vp@v1
         with:
-          node-version: '24'
+          node-version-file: .node-version
+          run-install: false
           cache: true
 
       - name: Install dependencies
@@ -43,7 +41,7 @@ jobs:
       - name: Commit Updated dist/
         id: commit
         env:
-          GH_TOKEN: ${{ secrets.UPDATE_DIST_TOKEN || github.token }}
+          GH_TOKEN: ${{ secrets.UPDATE_DIST_TOKEN }}
         run: |
           if [ ! -d dist/ ]; then
             echo "Expected dist/ directory does not exist.  See status below:"

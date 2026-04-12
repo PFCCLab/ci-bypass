@@ -34,13 +34,10 @@ export class ApproveRule extends AbstractRule {
     })
     const allReviewWithActors = allReviewResponse
       .map((review) => {
-        const reviewSummary = JSON.stringify({
-          id: review.id,
-          html_url: review.html_url,
-          state: review.state,
-        })
         if (!review.user) {
-          core.warning(`review.user is undefined, review: ${reviewSummary}`)
+          core.warning(
+            `review.user is undefined, review id=${review.id}, state=${review.state}, url=${review.html_url}`
+          )
           return undefined
         }
         return { state: review.state, actor: review.user.login }
